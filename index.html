@@ -13,10 +13,12 @@
 --bg-dark: #101216;
 --card-dark: #181b22;
 --card-border-dark: #262a36;
+--muscle-plate-bg: #343a4a; /* Lighter Grey for Body Part Plates */
+--muscle-plate-border: #485066;
 --accent-neon: #00ff88;
 --accent-cyan: #00e5ff;
 --text-main: #f0f2f5;
---text-muted: #8a8f9e;
+--text-muted: #9a9fae;
 --radius: 16px;
 --font-stack: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
 
@@ -33,6 +35,8 @@
 --bg-dark: #f4f6f9;
 --card-dark: #ffffff;
 --card-border-dark: #e1e4ea;
+--muscle-plate-bg: #e2e8f0; /* Crisp Light Grey */
+--muscle-plate-border: #cbd5e1;
 --accent-neon: #00a859;
 --accent-cyan: #0088cc;
 --text-main: #111827;
@@ -89,22 +93,20 @@ justify-content: space-between;
 align-items: center;
 }
 
-/* Logo matches robotic plate colour (#8a8f9e / #222634 accenting) */
 h1 {
 font-size: 1.4rem;
 font-weight: 900;
 letter-spacing: -0.5px;
-color: #8a8f9e;
+color: var(--text-muted);
 background: none;
 -webkit-text-fill-color: initial;
 }
 
 .header-actions {
 display: flex;
-gap: 12px; /* Increased spacing away from logo area */
+gap: 12px;
 }
 
-/* Smaller, tighter icon buttons containing only graphics/emojis */
 .icon-btn {
 background: var(--card-dark);
 border: 1px solid var(--card-border-dark);
@@ -147,7 +149,7 @@ font-weight: 700;
 cursor: pointer;
 }
 
-/* --- RECENT EXERCISES BAR --- */
+/* --- RECENT EXERCISES & QUICK SEARCH BAR --- */
 .recent-bar {
 display: flex;
 flex-direction: column;
@@ -184,6 +186,21 @@ transition: border-color 0.2s ease;
 }
 
 .recent-chip:active {
+border-color: var(--accent-neon);
+}
+
+.home-search-input {
+width: 100%;
+background: var(--card-dark);
+border: 1px solid var(--card-border-dark);
+border-radius: 12px;
+padding: 12px 16px;
+color: var(--text-main);
+font-size: 0.9rem;
+outline: none;
+}
+
+.home-search-input:focus {
 border-color: var(--accent-neon);
 }
 
@@ -225,10 +242,10 @@ height: 100%;
 filter: drop-shadow(0px 4px 16px rgba(0,0,0,0.4));
 }
 
-/* Robotic Plate Styling with Rounded Corners */
+/* Robotic Plate Styling with Lighter Grey */
 .muscle-plate {
-fill: #222634;
-stroke: #33384a;
+fill: var(--muscle-plate-bg);
+stroke: var(--muscle-plate-border);
 stroke-width: 1.5;
 cursor: pointer;
 rx: 8px;
@@ -245,7 +262,7 @@ filter: drop-shadow(0px 0px 10px var(--accent-neon));
 .plate-label {
 font-size: 8px;
 font-weight: 800;
-fill: #8a8f9e;
+fill: var(--text-main);
 pointer-events: none;
 text-anchor: middle;
 dominant-baseline: central;
@@ -413,7 +430,7 @@ border: 1px solid var(--modal-border);
 border-radius: 16px;
 padding: 12px;
 height: 190px;
-min-width: 100%; /* Dynamically expanded in JS when entries > 12 */
+min-width: 100%;
 }
 
 .variation-select-group {
@@ -540,7 +557,7 @@ transition: opacity 0.2s ease;
 opacity: 0.8;
 }
 
-/* Single Last Entry Card (Non-scrollable) */
+/* Single Last Entry Card */
 .single-history-card {
 background: var(--modal-card);
 border: 1px solid var(--modal-border);
@@ -558,6 +575,37 @@ background: transparent;
 border: none;
 cursor: pointer;
 font-size: 0.85rem;
+}
+
+.edit-btn {
+color: var(--modal-accent);
+background: transparent;
+border: none;
+cursor: pointer;
+font-size: 0.9rem;
+margin-left: 10px;
+}
+
+/* Workout History Single-Line Layout */
+.history-row-item {
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 0.82rem;
+padding: 6px 0;
+border-bottom: 1px solid var(--modal-border);
+white-space: nowrap;
+}
+
+.history-row-item:last-child {
+border-bottom: none;
+}
+
+.history-details-single {
+display: flex;
+align-items: center;
+gap: 6px;
+white-space: nowrap;
 }
 </style>
 </head>
@@ -583,14 +631,6 @@ font-size: 0.85rem;
 <button onclick="exportData()">Save Backup</button>
 </div>
 
-<!-- RECENT EXERCISES BAR -->
-<div class="recent-bar">
-<div class="section-title">Quick Resume</div>
-<div id="recentChips" class="recent-chips">
-<!-- Dynamically filled by JS -->
-</div>
-</div>
-
 <!-- ROBOTIC HALF-FRONT / HALF-BACK BODY MAP CARD -->
 <div class="body-map-card">
 <div class="map-legend">
@@ -604,8 +644,8 @@ font-size: 0.85rem;
 <line x1="120" y1="10" x2="120" y2="370" stroke="#262a36" stroke-dasharray="4 4" stroke-width="2"/>
 
 <!-- HEAD / HELMET (SPLIT) -->
-<rect x="100" y="14" width="18" height="32" rx="6" fill="#1c1f2b" stroke="#33384a"/>
-<rect x="122" y="14" width="18" height="32" rx="6" fill="#1c1f2b" stroke="#33384a"/>
+<rect x="100" y="14" width="18" height="32" rx="6" fill="#202430" stroke="#3a4054"/>
+<rect x="122" y="14" width="18" height="32" rx="6" fill="#202430" stroke="#3a4054"/>
 
 <!-- ================= LEFT HALF: FRONT VIEW ================= -->
 <!-- Shoulder (Front) -->
@@ -636,28 +676,28 @@ font-size: 0.85rem;
 <text x="101" y="314" class="plate-label">Calf</text>
 
 <!-- ================= RIGHT HALF: BACK VIEW ================= -->
-<!-- Upper Back / Traps -->
-<rect x="122" y="50" width="44" height="44" rx="8" class="muscle-plate" data-muscle="Upper Back"/>
-<text x="144" y="72" class="plate-label">Upper</text>
+<!-- Upper Back / Traps (Height: 40px) -->
+<rect x="122" y="50" width="44" height="40" rx="8" class="muscle-plate" data-muscle="Upper Back"/>
+<text x="144" y="70" class="plate-label">Upper</text>
 
 <!-- Shoulder / Rear Delt -->
 <rect x="168" y="50" width="44" height="44" rx="10" class="muscle-plate" data-muscle="Shoulders"/>
 <text x="190" y="72" class="plate-label">Shoulder</text>
 
-<!-- Mid Back & Lats -->
-<rect x="122" y="98" width="44" height="44" rx="8" class="muscle-plate" data-muscle="Mid Back"/>
-<text x="144" y="120" class="plate-label">
+<!-- Mid Back & Lats (Height: 40px) -->
+<rect x="122" y="92" width="44" height="40" rx="8" class="muscle-plate" data-muscle="Mid Back"/>
+<text x="144" y="112" class="plate-label">
   <tspan x="144" dy="-4">Mid</tspan>
-  <tspan x="144" dy="10">/LD</tspan>
+  <tspan x="144" dy="10">/Lat</tspan>
 </text>
 
 <!-- Tricep & Forearm -->
 <rect x="170" y="98" width="42" height="50" rx="8" class="muscle-plate" data-muscle="Arms"/>
 <text x="191" y="123" class="plate-label">Tri</text>
 
-<!-- Lower Back (Erectors) -->
-<rect x="122" y="146" width="44" height="24" rx="8" class="muscle-plate" data-muscle="Lower Back"/>
-<text x="144" y="158" class="plate-label">Lower</text>
+<!-- Lower Back (Erectors) (Height: 38px) -->
+<rect x="122" y="134" width="44" height="38" rx="8" class="muscle-plate" data-muscle="Lower Back"/>
+<text x="144" y="153" class="plate-label">Lower</text>
 
 <!-- Glute -->
 <rect x="122" y="174" width="42" height="42" rx="10" class="muscle-plate" data-muscle="Glutes"/>
@@ -671,6 +711,21 @@ font-size: 0.85rem;
 <rect x="122" y="272" width="34" height="84" rx="10" class="muscle-plate" data-muscle="Calves"/>
 <text x="139" y="314" class="plate-label">Calf</text>
 </svg>
+</div>
+</div>
+
+<!-- BOTTOM HOMEPAGE SEARCH BAR -->
+<div class="recent-bar">
+<div class="section-title">Quick Search</div>
+<input type="text" id="homeSearchInput" class="home-search-input" placeholder="🔍 Search exercise..." oninput="handleHomeSearch(this.value)">
+<div id="searchResultsList" class="exercise-list" style="display:none; margin-top:6px;"></div>
+</div>
+
+<!-- RECENT EXERCISES BAR (QUICK RESUME BELOW SEARCH) -->
+<div class="recent-bar">
+<div class="section-title">Quick Resume</div>
+<div id="recentChips" class="recent-chips">
+<!-- Dynamically filled by JS -->
 </div>
 </div>
 </div>
@@ -701,6 +756,19 @@ font-size: 0.85rem;
 </div>
 <div id="historyModalBody" class="modal-body">
 <!-- History session cards injected here -->
+</div>
+</div>
+</div>
+
+<!-- EDIT ENTRY MODAL -->
+<div id="editModal" class="modal-overlay">
+<div class="modal-window">
+<div class="modal-header">
+<div class="modal-title">✏️ Edit Log Entry</div>
+<button class="close-btn" onclick="closeEditModal()">×</button>
+</div>
+<div id="editModalBody" class="modal-body">
+<!-- Injected edit form -->
 </div>
 </div>
 </div>
@@ -766,6 +834,7 @@ customEx: customExStorage,
 lastBackupCount: parseInt(localStorage.getItem('myolog_backup_count') || '0'),
 currentMuscle: '',
 currentExercise: '',
+editingLogId: null,
 chartInstance: null
 };
 
@@ -785,11 +854,45 @@ openMuscleModal(muscle);
 });
 }
 
-/* Get all exercises (Default + Custom) for a muscle group */
+/* Get all exercises (Default + Custom) */
 function getAllExercises(muscle) {
+if (!muscle) {
+let all = [];
+Object.keys(EXERCISE_DB).forEach(m => {
+all = all.concat(EXERCISE_DB[m].exercises);
+if (appState.customEx[m]) all = all.concat(appState.customEx[m]);
+});
+return [...new Set(all)];
+}
 const defaults = EXERCISE_DB[muscle] ? EXERCISE_DB[muscle].exercises : [];
 const customs = appState.customEx[muscle] || [];
 return [...new Set([...defaults, ...customs])];
+}
+
+/* --- HOMEPAGE SEARCH --- */
+function handleHomeSearch(query) {
+const resultsContainer = document.getElementById('searchResultsList');
+if (!query.trim()) {
+resultsContainer.style.display = 'none';
+resultsContainer.innerHTML = '';
+return;
+}
+
+const allEx = getAllExercises();
+const filtered = allEx.filter(e => e.toLowerCase().includes(query.toLowerCase())).sort();
+
+if (filtered.length === 0) {
+resultsContainer.style.display = 'none';
+return;
+}
+
+resultsContainer.style.display = 'flex';
+resultsContainer.innerHTML = filtered.slice(0, 5).map(ex => `
+<div class="exercise-item" onclick="openExerciseLogging('${ex}')">
+<span>${ex}</span>
+<span style="color:var(--modal-subtext); font-size:0.8rem;">➔</span>
+</div>
+`).join('');
 }
 
 /* --- RECENT CHIPS & BACKUP WARNING --- */
@@ -841,7 +944,7 @@ const exercises = getAllExercises(muscle);
 
 const body = document.getElementById('modalBody');
 body.innerHTML = `
-<input type="text" class="search-input" placeholder="🔍 Search or filter exercises..." oninput="filterExercises(this.value)">
+<input type="text" class="search-input" placeholder="🔍 Search exercises..." oninput="filterExercises(this.value)">
 <div id="exerciseList" class="exercise-list">
 ${exercises.sort().map(ex => `
 <div class="exercise-item" onclick="openExerciseLogging('${ex}')">
@@ -884,13 +987,12 @@ const customName = input.value.trim();
 if (!customName) return;
 
 const muscle = appState.currentMuscle;
-if (!appState.customEx[muscle]) {
-appState.customEx[muscle] = [];
-}
-
+if (muscle) {
+if (!appState.customEx[muscle]) appState.customEx[muscle] = [];
 if (!appState.customEx[muscle].includes(customName)) {
 appState.customEx[muscle].push(customName);
 localStorage.setItem('myolog_custom_ex', JSON.stringify(appState.customEx));
+}
 }
 
 openExerciseLogging(customName);
@@ -900,7 +1002,7 @@ function showMuscleExerciseList() {
 openMuscleModal(appState.currentMuscle);
 }
 
-/* Helper to get context-appropriate default variation for first-time entries */
+/* Helper to get context-appropriate default variation */
 function getContextualDefaultVariation(exerciseName) {
 const name = exerciseName.toLowerCase();
 if (name.includes("push up") || name.includes("plank") || name.includes("dip") || name.includes("lunge") || name.includes("pull up")) {
@@ -939,12 +1041,12 @@ const isSmall = appState.currentMuscle && EXERCISE_DB[appState.currentMuscle]
 
 const increments = isSmall ? [-2, -1, 0.5, 1, 2] : [-10, -2.5, 2.5, 5, 10];
 
-// Variation selection logic: use last log variation if available, otherwise context-based
 let defaultVariation = lastLog ? lastLog.variation : getContextualDefaultVariation(exerciseName);
 
-// Reps autofill logic: leave blank for timed exercises (plank/hold), otherwise use last log or default to '10-12'
 const exNameLower = exerciseName.toLowerCase();
 const isTimedEx = exNameLower.includes("plank") || exNameLower.includes("hold");
+const isPushUp = exNameLower.includes("push up");
+
 let defaultReps = '';
 if (!isTimedEx) {
 defaultReps = lastLog && lastLog.reps ? lastLog.reps : '10-12';
@@ -952,7 +1054,6 @@ defaultReps = lastLog && lastLog.reps ? lastLog.reps : '10-12';
 
 const body = document.getElementById('modalBody');
 body.innerHTML = `
-<div class="section-title">Last Entry</div>
 <div id="lastEntryCard"></div>
 
 <div class="variation-select-group">
@@ -987,6 +1088,13 @@ ${increments.map(inc => `<button class="chip-btn" onclick="adjustWeight(${inc})"
 <label class="input-label">Duration (Seconds)</label>
 <input type="number" id="timeInput" class="num-input" placeholder="e.g. 60" value="${lastLog && lastLog.time ? lastLog.time : ''}">
 </div>
+
+${isPushUp ? `
+<div id="inclinationGroup" class="input-group">
+<label class="input-label">Inclination</label>
+<input type="text" id="inclinationInput" class="num-input" placeholder="e.g. Incline / Decline / Flat" value="${lastLog && lastLog.inclination ? lastLog.inclination : ''}">
+</div>
+` : ''}
 
 <div class="input-group">
 <label class="input-label">Date</label>
@@ -1062,9 +1170,8 @@ if (!canvas || !graphCard) return;
 
 const entryCount = filteredLogs.length;
 
-// Dynamically scale width when entries > 12 to enable horizontal scrolling back in time
 if (entryCount > 12) {
-const dynamicWidth = entryCount * 32; // ~32px per data point
+const dynamicWidth = entryCount * 32;
 graphCard.style.width = `${dynamicWidth}px`;
 } else {
 graphCard.style.width = '100%';
@@ -1098,7 +1205,7 @@ borderColor: '#00ff88',
 backgroundColor: 'rgba(0, 255, 136, 0.1)',
 fill: true,
 tension: 0.3,
-pointStyle: 'circle', // Solid dot
+pointStyle: 'circle',
 pointRadius: 6,
 pointHoverRadius: 8,
 pointBackgroundColor: '#00ff88',
@@ -1112,22 +1219,23 @@ plugins: {
 legend: { display: false },
 tooltip: {
 callbacks: {
-// Tooltip format: "Weight x Reps on Date" (e.g., 20kg x 10 on 2026-09-24)
 label: function(context) {
 const index = context.dataIndex;
 const log = filteredLogs[index];
 if (!log) return '';
 
+let detailStr = '';
 if (isTimedEx) {
-return `${log.time ? log.time + 's' : ''}${log.reps ? ' (' + log.reps + ' reps)' : ''}`;
+detailStr = `${log.time ? log.time + 's' : ''}${log.reps ? ' (' + log.reps + ' reps)' : ''}`;
 } else if (isBodyweight) {
-return `${log.reps} reps`;
+detailStr = `${log.reps} reps`;
 } else {
-return `${log.weight}${log.unit} × ${log.reps}`;
+detailStr = `${log.weight}${log.unit} × ${log.reps}`;
 }
+return `${detailStr} (${log.variation})`;
 },
 title: function(context) {
-return context[0].label; // Displays Date
+return context[0].label;
 }
 }
 }
@@ -1139,7 +1247,6 @@ y: { ticks: { color: '#8a8f9e', font: { size: 10 } }, grid: { color: '#2e3342' }
 }
 });
 
-// Auto scroll to the far right (most recent data point)
 if (scrollContainer && entryCount > 12) {
 setTimeout(() => {
 scrollContainer.scrollLeft = scrollContainer.scrollWidth;
@@ -1147,7 +1254,7 @@ scrollContainer.scrollLeft = scrollContainer.scrollWidth;
 }
 }
 
-/* --- RENDER SINGLE LAST ENTRY CARD (NON-SCROLLABLE) --- */
+/* --- RENDER SINGLE LAST ENTRY CARD --- */
 function renderLastEntryCard() {
 const container = document.getElementById('lastEntryCard');
 if (!container) return;
@@ -1159,13 +1266,12 @@ container.innerHTML = '<div class="single-history-card" style="color:var(--modal
 return;
 }
 
-const item = filtered[filtered.length - 1]; // Only show the single most recent log
+const item = filtered[filtered.length - 1];
 
 container.innerHTML = `
 <div class="single-history-card">
 <div>
-<strong>${item.variation === 'Bodyweight' ? '' : item.weight + ' ' + item.unit + ' × '}${item.reps ? item.reps + ' reps' : ''}${item.time ? ' (' + item.time + 's)' : ''}</strong>
-<span style="color:var(--modal-subtext); font-size:0.75rem; margin-left:6px;">(${item.variation})</span>
+<strong>${item.variation === 'Bodyweight' ? '' : item.weight + ' ' + item.unit + ' × '}${item.reps ? item.reps + ' reps' : ''}${item.time ? ' (' + item.time + 's)' : ''}${item.inclination ? ' - ' + item.inclination : ''}</strong>
 </div>
 <div>
 <span style="color:var(--modal-subtext); font-size:0.75rem; margin-right:8px;">${item.date}</span>
@@ -1179,6 +1285,7 @@ function saveLogEntry() {
 const selectedVar = document.getElementById('varSelect').value;
 const weightVal = selectedVar === 'Bodyweight' ? 0 : (parseFloat(document.getElementById('weightInput').value) || 0);
 const timeVal = document.getElementById('timeInput') ? document.getElementById('timeInput').value : '';
+const inclinationVal = document.getElementById('inclinationInput') ? document.getElementById('inclinationInput').value : '';
 
 const newEntry = {
 id: 'log_' + Date.now(),
@@ -1189,7 +1296,8 @@ variation: selectedVar,
 weight: weightVal,
 unit: document.getElementById('unitSelect').value,
 reps: document.getElementById('repsInput').value || '',
-time: timeVal
+time: timeVal,
+inclination: inclinationVal
 };
 
 appState.logs.push(newEntry);
@@ -1197,8 +1305,8 @@ localStorage.setItem('myolog_logs', JSON.stringify(appState.logs));
 
 renderRecentChips();
 checkBackupPrompt();
-renderGraph();
-renderLastEntryCard();
+
+closeModal();
 }
 
 function deleteLog(id) {
@@ -1209,7 +1317,7 @@ renderLastEntryCard();
 renderRecentChips();
 }
 
-/* --- WORKOUT HISTORY MODAL --- */
+/* --- WORKOUT HISTORY MODAL & EDITING --- */
 function openWorkoutHistory() {
 const container = document.getElementById('historyModalBody');
 const grouped = {};
@@ -1227,9 +1335,12 @@ container.innerHTML = dates.map(date => `
 <div style="background:var(--modal-card); border:1px solid var(--modal-border); padding:14px; border-radius:14px; margin-bottom:12px;">
 <div style="font-weight:800; color:var(--modal-accent); margin-bottom:8px; border-bottom:1px solid var(--modal-border); padding-bottom:4px;">🗓️ ${date}</div>
 ${grouped[date].map(item => `
-<div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:4px 0;">
+<div class="history-row-item">
 <span>${item.exerciseName} (${item.variation})</span>
+<div class="history-details-single">
 <strong>${item.variation === 'Bodyweight' ? '' : item.weight + item.unit + ' × '}${item.reps}${item.time ? ' (' + item.time + 's)' : ''}</strong>
+<button class="edit-btn" onclick="openEditLogModal('${item.id}')">✏️</button>
+</div>
 </div>
 `).join('')}
 </div>
@@ -1241,6 +1352,84 @@ document.getElementById('historyModal').classList.add('active');
 
 function closeHistoryModal() {
 document.getElementById('historyModal').classList.remove('active');
+}
+
+function openEditLogModal(id) {
+appState.editingLogId = id;
+const log = appState.logs.find(l => l.id === id);
+if (!log) return;
+
+const isTimed = log.exerciseName.toLowerCase().includes("plank") || log.exerciseName.toLowerCase().includes("hold");
+
+const body = document.getElementById('editModalBody');
+body.innerHTML = `
+<div style="font-weight:700; font-size:1rem; margin-bottom:10px; color:var(--modal-accent);">${log.exerciseName}</div>
+
+<div class="input-group">
+<label class="input-label">Variation</label>
+<select id="editVarSelect" class="select-style">
+${VARIATIONS.map(v => `<option value="${v}" ${log.variation === v ? 'selected' : ''}>${v}</option>`).join('')}
+</select>
+</div>
+
+<div class="input-row" style="margin-top:10px;">
+<div class="input-group">
+<label class="input-label">Weight</label>
+<div class="field-with-unit">
+<input type="number" id="editWeightInput" class="num-input" value="${log.weight}" step="0.5">
+<select id="editUnitSelect" class="unit-select">
+<option value="kg" ${log.unit === 'kg' ? 'selected' : ''}>kg</option>
+<option value="lb" ${log.unit === 'lb' ? 'selected' : ''}>lb</option>
+</select>
+</div>
+</div>
+<div class="input-group">
+<label class="input-label">Reps</label>
+<input type="text" id="editRepsInput" class="num-input" value="${log.reps}">
+</div>
+</div>
+
+${isTimed ? `
+<div class="input-group" style="margin-top:10px;">
+<label class="input-label">Duration (Seconds)</label>
+<input type="number" id="editTimeInput" class="num-input" value="${log.time || ''}">
+</div>
+` : ''}
+
+<div class="input-group" style="margin-top:10px;">
+<label class="input-label">Date</label>
+<input type="date" id="editDateInput" class="num-input" value="${log.date}">
+</div>
+
+<button class="save-btn" style="margin-top:14px;" onclick="saveEditedLogEntry()">Save Changes</button>
+`;
+
+document.getElementById('editModal').classList.add('active');
+}
+
+function closeEditModal() {
+document.getElementById('editModal').classList.remove('active');
+appState.editingLogId = null;
+}
+
+function saveEditedLogEntry() {
+const id = appState.editingLogId;
+const index = appState.logs.findIndex(l => l.id === id);
+if (index !== -1) {
+appState.logs[index].variation = document.getElementById('editVarSelect').value;
+appState.logs[index].weight = parseFloat(document.getElementById('editWeightInput').value) || 0;
+appState.logs[index].unit = document.getElementById('editUnitSelect').value;
+appState.logs[index].reps = document.getElementById('editRepsInput').value || '';
+if (document.getElementById('editTimeInput')) {
+appState.logs[index].time = document.getElementById('editTimeInput').value || '';
+}
+appState.logs[index].date = document.getElementById('editDateInput').value;
+
+localStorage.setItem('myolog_logs', JSON.stringify(appState.logs));
+}
+
+closeEditModal();
+openWorkoutHistory();
 }
 
 /* --- BACKUP EXPORT & IMPORT --- */
