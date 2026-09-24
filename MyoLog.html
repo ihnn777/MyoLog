@@ -1,0 +1,1119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;MyoLog - Fitness &amp; Progression Tracker&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Chart.js CDN for progression graphs --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdn.jsdelivr.net/npm/chart.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- CSS VARIABLES &amp; THEMING --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>:root {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>/* Cyber Dark Theme (Homepage, Graphs, Workout History) */</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--bg-dark: #101216;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--card-dark: #181b22;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--card-border-dark: #262a36;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--accent-neon: #00ff88;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--accent-cyan: #00e5ff;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--text-main: #f0f2f5;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--text-muted: #8a8f9e;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--radius: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--font-stack: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>/* Sleek Minimalist Theme (Pop-Up Modal Windows) */</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--modal-bg: #16181f;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--modal-card: #20232d;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--modal-border: #2e3342;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--modal-accent: #ffffff;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>--modal-subtext: #a0a5b5;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>@media (prefers-color-scheme: light) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>:root {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>--bg-dark: #f4f6f9;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>--card-dark: #ffffff;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>--card-border-dark: #e1e4ea;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>--accent-neon: #00a859;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>--accent-cyan: #0088cc;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>--text-main: #111827;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>--text-muted: #6b7280;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>--modal-bg: #ffffff;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>--modal-card: #f8f9fa;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>--modal-border: #e2e8f0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>--modal-accent: #0f172a;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>--modal-subtext: #64748b;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>* {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box-sizing: border-box;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-family: var(--font-stack);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>-webkit-tap-highlight-color: transparent;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: var(--bg-dark);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--text-main);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>min-height: 100vh;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding-bottom: 30px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>overflow-x: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- LAYOUT CONTAINERS --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.app-container {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>max-width: 480px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- HEADER &amp; TOP BAR --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>header {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding-bottom: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.header-top-row {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>h1 {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 1.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>letter-spacing: -0.5px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: linear-gradient(135deg, var(--accent-neon), var(--accent-cyan));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>-webkit-background-clip: text;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>-webkit-text-fill-color: transparent;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.header-actions {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.icon-btn {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--card-dark);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--card-border-dark);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--text-main);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 8px 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.8rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 600;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transition: all 0.2s ease;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.icon-btn:active {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transform: scale(0.95);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-color: var(--accent-neon);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* Non-intrusive Backup Banner */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.backup-banner {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 229, 255, 0.15));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--accent-neon);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: var(--radius);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 12px 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.85rem;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.backup-banner button {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--accent-neon);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: #000;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 6px 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- RECENT EXERCISES BAR --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.recent-bar {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.section-title {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.75rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>letter-spacing: 1px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--text-muted);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 800;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.recent-chips {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>overflow-x: auto;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding-bottom: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>scrollbar-width: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.recent-chip {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--card-dark);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--card-border-dark);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--text-main);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 8px 14px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.85rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>white-space: nowrap;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 600;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transition: border-color 0.2s ease;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.recent-chip:active {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-color: var(--accent-neon);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- BODY MAP CARD --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.body-map-card {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--card-dark);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--card-border-dark);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: var(--radius);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 8px 24px rgba(0,0,0,0.25);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.map-legend {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 0 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.75rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 800;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>letter-spacing: 1px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--text-muted);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* SVG Silhouette Styling */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.svg-container {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>max-width: 320px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 400px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>svg {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>filter: drop-shadow(0px 4px 16px rgba(0,0,0,0.4));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* Robotic Plate Styling with Rounded Corners */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.muscle-plate {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>fill: #222634;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>stroke: #33384a;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>stroke-width: 1.5;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rx: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>ry: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transition: all 0.2s ease;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.muscle-plate:hover, .muscle-plate:active {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>fill: var(--accent-neon);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>stroke: var(--accent-cyan);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>filter: drop-shadow(0px 0px 10px var(--accent-neon));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.plate-label {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 800;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>fill: #8a8f9e;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>pointer-events: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>text-anchor: middle;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>dominant-baseline: central;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>letter-spacing: 0.5px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.muscle-plate:hover + .plate-label,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.muscle-plate:active + .plate-label {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>fill: #000000;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- POP-UP MODAL WINDOW --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.modal-overlay {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>position: fixed;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>top: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>left: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100vw;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 100vh;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(0, 0, 0, 0.8);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>backdrop-filter: blur(8px);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: flex-end;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>z-index: 1000;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>opacity: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transition: opacity 0.25s ease;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.modal-overlay.active {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>opacity: 1;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.modal-window {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-bg);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-top-left-radius: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-top-right-radius: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>max-width: 500px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>max-height: 92vh;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 -10px 40px rgba(0,0,0,0.6);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transform: translateY(100%);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.modal-overlay.active .modal-window {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transform: translateY(0);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.modal-header {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 16px 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-bottom: 1px solid var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-card);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.modal-title-group {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.modal-title {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 1.1rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--modal-accent);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.close-btn {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: transparent;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--modal-subtext);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 1.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>line-height: 1;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* Ensured bottom padding so elements are never cut off */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.modal-body {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding-bottom: 40px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>overflow-y: auto;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 18px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.search-input {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-card);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 12px 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--modal-accent);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.95rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>outline: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.search-input:focus {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-color: var(--modal-subtext);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.exercise-list {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.exercise-item {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-card);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 14px 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--modal-accent);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 600;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transition: background 0.2s ease;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.exercise-item:active {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* EXERCISE LOGGING &amp; GRAPH VIEW */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.quick-ref-box {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-card);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.85rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--modal-subtext);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.graph-card {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-card);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 180px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.variation-select-group {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.select-style {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex: 1;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-card);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--modal-accent);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 10px 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.9rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>outline: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* Logging Controls */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.logging-form {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-card);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 18px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.input-row {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.input-group {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex: 1;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.input-label {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.75rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--modal-subtext);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.field-with-unit {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.num-input {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-bg);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--modal-accent);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 1.1rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>outline: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.unit-select {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-bg);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--modal-accent);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 0 8px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 600;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* Quick Increment Chips */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.increment-chips {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.chip-btn {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex: 1;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-bg);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--modal-accent);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 10px 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.8rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.chip-btn:active {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.save-btn {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-accent);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: var(--modal-bg);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 1rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 800;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transition: opacity 0.2s ease;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.save-btn:active {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>opacity: 0.8;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* Scrollable History Log */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.history-card {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: var(--modal-card);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>max-height: 140px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>overflow-y: auto;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.history-item {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 6px 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-bottom: 1px solid var(--modal-border);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.85rem;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.history-item:last-child {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-bottom: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.del-btn {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: #ff4d4d;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: transparent;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 0.8rem;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="app-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- HOMEPAGE HEADER &amp; TOP BACKUP BAR --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;header&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="header-top-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1&gt;MYOLOG&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="header-actions"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="icon-btn" onclick="openWorkoutHistory()"&gt;📅 History&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="icon-btn" onclick="exportData()"&gt;💾 Backup&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="icon-btn" onclick="triggerImport()"&gt;📥 Import&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="importData(event)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/header&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- NON-INTRUSIVE BACKUP BANNER --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="backupBanner" class="backup-banner"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;You've logged 10 new exercises!&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button onclick="exportData()"&gt;Save Backup&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- RECENT EXERCISES BAR --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="recent-bar"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="section-title"&gt;Quick Resume&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="recentChips" class="recent-chips"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Dynamically filled by JS --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- ROBOTIC HALF-FRONT / HALF-BACK BODY MAP CARD --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="body-map-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="map-legend"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span&gt;◀ FRONT VIEW&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span&gt;BACK VIEW ▶&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="svg-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;svg viewBox="0 0 240 380"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Center Divider Axis --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;line x1="120" y1="10" x2="120" y2="370" stroke="#262a36" stroke-dasharray="4 4" stroke-width="2"/&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- HEAD / HELMET (SPLIT) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="100" y="14" width="18" height="32" rx="6" fill="#1c1f2b" stroke="#33384a"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="122" y="14" width="18" height="32" rx="6" fill="#1c1f2b" stroke="#33384a"/&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- ================= LEFT HALF: FRONT VIEW ================= --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Shoulder (Expanded Touch Target) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="42" y="50" width="52" height="44" rx="10" class="muscle-plate" data-muscle="Shoulders"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;text x="68" y="72" class="plate-label"&gt;Shoulder&lt;/text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Chest &amp; Serratus (Expanded) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="98" y="50" width="20" height="48" rx="8" class="muscle-plate" data-muscle="Chest"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;text x="108" y="74" class="plate-label"&gt;Pec&lt;/text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Bicep &amp; Forearm --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="22" y="98" width="36" height="50" rx="8" class="muscle-plate" data-muscle="Arms"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;text x="40" y="123" class="plate-label"&gt;Arm&lt;/text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Abs &amp; Obliques --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="98" y="102" width="20" height="68" rx="8" class="muscle-plate" data-muscle="Core"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;text x="108" y="136" class="plate-label"&gt;Abs&lt;/text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Quad &amp; Adductors --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="80" y="174" width="38" height="92" rx="10" class="muscle-plate" data-muscle="Quads"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;text x="99" y="220" class="plate-label"&gt;Quad&lt;/text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Calf (Front) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="86" y="272" width="32" height="84" rx="10" class="muscle-plate" data-muscle="Calves"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;text x="102" y="314" class="plate-label"&gt;Calf&lt;/text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- ================= RIGHT HALF: BACK VIEW ================= --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Upper Back &amp; Traps (Expanded) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="122" y="50" width="24" height="44" rx="8" class="muscle-plate" data-muscle="Upper Back"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;text x="134" y="72" class="plate-label"&gt;Traps&lt;/text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Shoulder / Rear Delt (Expanded Touch Target) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="148" y="50" width="50" height="44" rx="10" class="muscle-plate" data-muscle="Shoulders"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;text x="173" y="72" class="plate-label"&gt;Shoulder&lt;/text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Mid Back &amp; Lats (Expanded) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="122" y="98" width="36" height="44" rx="8" class="muscle-plate" data-muscle="Mid Back"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;text x="140" y="120" class="plate-label"&gt;Lats&lt;/text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Tricep &amp; Forearm --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="182" y="98" width="36" height="50" rx="8" class="muscle-plate" data-muscle="Arms"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;text x="200" y="123" class="plate-label"&gt;Tri&lt;/text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Lower Back (Erectors) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="122" y="146" width="36" height="24" rx="8" class="muscle-plate" data-muscle="Lower Back"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;text x="140" y="158" class="plate-label"&gt;L-Back&lt;/text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Glute --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="122" y="174" width="40" height="42" rx="10" class="muscle-plate" data-muscle="Glutes"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;text x="142" y="195" class="plate-label"&gt;Glute&lt;/text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Hamstrings --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="122" y="220" width="38" height="46" rx="8" class="muscle-plate" data-muscle="Hamstrings"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;text x="141" y="243" class="plate-label"&gt;Ham&lt;/text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Calf (Back) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;rect x="122" y="272" width="32" height="84" rx="10" class="muscle-plate" data-muscle="Calves"/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;text x="138" y="314" class="plate-label"&gt;Calf&lt;/text&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- POP-UP OVERLAY MODAL --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="appModal" class="modal-overlay"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="modal-window"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="modal-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="modal-title-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button id="modalBackBtn" class="icon-btn" style="display:none;" onclick="showMuscleExerciseList()"&gt;← Back&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div id="modalTitle" class="modal-title"&gt;Muscle Group&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="close-btn" onclick="closeModal()"&gt;×&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="modalBody" class="modal-body"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Dynamic content injected by JS --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- WORKOUT HISTORY MODAL --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="historyModal" class="modal-overlay"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="modal-window"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="modal-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="modal-title"&gt;📅 Workout History&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="close-btn" onclick="closeHistoryModal()"&gt;×&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="historyModalBody" class="modal-body"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- History session cards injected here --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- DATA STRUCTURE &amp; UPDATED EXERCISE DATABASE --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const EXERCISE_DB = {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Chest": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>isSmall: false,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>exercises: ["Bench Press", "Incline Dumbbell Press", "Chest Fly", "Dips", "Push Up", "Serratus Cable Punch"]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Shoulders": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>isSmall: true,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>exercises: ["Overhead Shoulder Press", "Lateral Raises", "Front Raises", "Face Pulls", "Rotator Cuff External Rotation"]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Arms": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>isSmall: true,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>exercises: ["Barbell Bicep Curl", "Hammer Curls", "Tricep Pushdown", "Skullcrushers", "Wrist Curls"]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Core": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>isSmall: true,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>exercises: ["Cable Woodchoppers", "Hanging Leg Raise", "Ab Wheel Rollout", "Russian Twists"]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Quads": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>isSmall: false,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>exercises: ["Barbell Squat", "Leg Press", "Leg Extension", "Lunges", "Bulgarian Split Squat", "Machine Inner Thigh Adduction"]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Upper Back": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>isSmall: false,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>exercises: ["Barbell Shrugs", "Face Pulls", "Chest-Supported Row"]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Mid Back": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>isSmall: false,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>exercises: ["Lat Pulldown", "Seated Cable Row (Wide Grip)", "Seated Cable Row (Narrow Grip)", "Single-Arm Dumbbell Row", "T-Bar Row"]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Lower Back": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>isSmall: false,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>exercises: ["Standard Deadlift", "Conventional Deadlift", "Back Extension", "Good Mornings"]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Glutes": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>isSmall: false,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>exercises: ["Hip Thrust", "Barbell Hip Thrust", "Bulgarian Split Squat", "Single Leg RDL", "Glute Cable Kickback", "Standard Deadlift"]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Hamstrings": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>isSmall: false,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>exercises: ["Lying Leg Curl", "Seated Leg Curl", "Romanian Deadlift", "Single Leg RDL", "Standard Deadlift"]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Calves": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>isSmall: true,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>exercises: ["Standing Calf Raise", "Seated Calf Raise"]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const VARIATIONS = ["Machine", "Barbell", "Dumbbell", "Cable", "Bodyweight"];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// App State Management (Supports migration from prior keys)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let initialLogs = localStorage.getItem('myolog_logs') || localStorage.getItem('siuhey_logs') || '[]';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let appState = {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>logs: JSON.parse(initialLogs),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>lastBackupCount: parseInt(localStorage.getItem('myolog_backup_count') || '0'),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>currentMuscle: '',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>currentExercise: '',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>chartInstance: null</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- INITIALIZATION --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.addEventListener('DOMContentLoaded', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderRecentChips();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>checkBackupPrompt();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>setupSvgListeners();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function setupSvgListeners() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.querySelectorAll('.muscle-plate').forEach(zone =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>zone.addEventListener('click', (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const muscle = e.target.getAttribute('data-muscle');</p>
+<p class="p1"><span class="Apple-converted-space">          </span>openMuscleModal(muscle);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- RECENT CHIPS &amp; BACKUP WARNING --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function renderRecentChips() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const container = document.getElementById('recentChips');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>container.innerHTML = '';</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const recentNames = [...new Set(appState.logs.slice().reverse().map(l =&gt; l.exerciseName))].slice(0, 4);</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (recentNames.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>container.innerHTML = '&lt;span style="color:var(--text-muted); font-size:0.8rem;"&gt;Tap a muscle plate on the robot map to start!&lt;/span&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>recentNames.forEach(name =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const chip = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>chip.className = 'recent-chip';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>chip.textContent = name;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>chip.onclick = () =&gt; openExerciseLogging(name);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>container.appendChild(chip);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function checkBackupPrompt() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const unbackedLogs = appState.logs.length - appState.lastBackupCount;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('backupBanner').style.display = unbackedLogs &gt;= 10 ? 'flex' : 'none';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- MODAL MANAGEMENT --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function openModal() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('appModal').classList.add('active');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function closeModal() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('appModal').classList.remove('active');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (appState.chartInstance) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>appState.chartInstance.destroy();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>appState.chartInstance = null;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- STEP 1: MUSCLE EXERCISE LIST VIEW --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function openMuscleModal(muscle) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>appState.currentMuscle = muscle;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('modalTitle').textContent = muscle;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('modalBackBtn').style.display = 'none';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const exercises = EXERCISE_DB[muscle] ? EXERCISE_DB[muscle].exercises : [];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const body = document.getElementById('modalBody');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>body.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="text" class="search-input" placeholder="🔍 Search or filter exercises..." oninput="filterExercises(this.value)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="exerciseList" class="exercise-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>${exercises.sort().map(ex =&gt; `</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="exercise-item" onclick="openExerciseLogging('${ex}')"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;span&gt;${ex}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;span style="color:var(--modal-subtext); font-size:0.8rem;"&gt;➔&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>`).join('')}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>openModal();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function filterExercises(query) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const list = document.getElementById('exerciseList');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const muscle = appState.currentMuscle;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const exercises = EXERCISE_DB[muscle] ? EXERCISE_DB[muscle].exercises : [];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const filtered = exercises.filter(e =&gt; e.toLowerCase().includes(query.toLowerCase()));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>list.innerHTML = filtered.map(ex =&gt; `</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="exercise-item" onclick="openExerciseLogging('${ex}')"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;span&gt;${ex}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;span style="color:var(--modal-subtext); font-size:0.8rem;"&gt;➔&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>`).join('');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function showMuscleExerciseList() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>openMuscleModal(appState.currentMuscle);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- STEP 2: EXERCISE LOGGING &amp; GRAPH VIEW --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function openExerciseLogging(exerciseName) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>appState.currentExercise = exerciseName;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('modalTitle').textContent = exerciseName;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const backBtn = document.getElementById('modalBackBtn');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>backBtn.style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>backBtn.textContent = `← ${appState.currentMuscle || 'Back'}`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const exerciseLogs = appState.logs.filter(l =&gt; l.exerciseName === exerciseName);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const lastLog = exerciseLogs.length &gt; 0 ? exerciseLogs[exerciseLogs.length - 1] : null;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// CONTEXT-SPECIFIC INCREMENTS LOGIC</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const isSmall = appState.currentMuscle &amp;&amp; EXERCISE_DB[appState.currentMuscle]<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>? EXERCISE_DB[appState.currentMuscle].isSmall<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>: true;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Small groups (Shoulders, Arms, Core, Calves): 0.5kg / 1kg / 2kg</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Large groups (Chest, Quads, Back, Glutes, Hamstrings): 2.5kg / 5kg / 10kg</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const increments = isSmall ? [-2, -1, 0.5, 1, 2] : [-10, -2.5, 2.5, 5, 10];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Hip Thrust defaults to Machine variation if no prior entry exists</p>
+<p class="p1"><span class="Apple-converted-space">      </span>let defaultVariation = "Barbell";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (lastLog) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>defaultVariation = lastLog.variation;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else if (exerciseName.toLowerCase().includes("hip thrust")) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>defaultVariation = "Machine";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const body = document.getElementById('modalBody');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>body.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="quick-ref-box"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;span&gt;Last Logged:&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;strong&gt;${lastLog ? `${lastLog.weight}${lastLog.unit} × ${lastLog.reps} (${lastLog.date})` : 'No past logs'}&lt;/strong&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="graph-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;canvas id="progressionChart"&gt;&lt;/canvas&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="variation-select-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;select id="varSelect" class="select-style" onchange="renderGraph()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>${VARIATIONS.map(v =&gt; `&lt;option value="${v}" ${defaultVariation === v ? 'selected' : ''}&gt;${v}&lt;/option&gt;`).join('')}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="logging-form"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="input-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="input-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;label class="input-label"&gt;Weight&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div class="field-with-unit"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="number" id="weightInput" class="num-input" value="${lastLog ? lastLog.weight : 20}" step="0.5"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;select id="unitSelect" class="unit-select"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;option value="kg" ${lastLog &amp;&amp; lastLog.unit === 'kg' ? 'selected' : ''}&gt;kg&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;option value="lb" ${lastLog &amp;&amp; lastLog.unit === 'lb' ? 'selected' : ''}&gt;lb&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="input-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;label class="input-label"&gt;Reps&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;input type="text" id="repsInput" class="num-input" value="${lastLog ? lastLog.reps : '8-10'}"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="increment-chips"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>${increments.map(inc =&gt; `&lt;button class="chip-btn" onclick="adjustWeight(${inc})"&gt;${inc &gt; 0 ? '+' : ''}${inc}kg&lt;/button&gt;`).join('')}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="input-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;label class="input-label"&gt;Date&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;input type="date" id="dateInput" class="num-input" value="${new Date().toISOString().split('T')[0]}"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="save-btn" onclick="saveLogEntry()"&gt;Save Entry&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="section-title"&gt;Past History&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="historyLogBox" class="history-card"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>openModal();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderGraph();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderHistoryBox();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function adjustWeight(amount) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const input = document.getElementById('weightInput');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>let val = parseFloat(input.value) || 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>val = Math.max(0, val + amount);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>input.value = val;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- CHART.JS GRAPH RENDER --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function renderGraph() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const selectedVar = document.getElementById('varSelect').value;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const filteredLogs = appState.logs.filter(l =&gt; l.exerciseName === appState.currentExercise &amp;&amp; l.variation === selectedVar);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const ctx = document.getElementById('progressionChart').getContext('2d');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (appState.chartInstance) appState.chartInstance.destroy();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>appState.chartInstance = new Chart(ctx, {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>type: 'line',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>data: {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>labels: filteredLogs.map(l =&gt; l.date),</p>
+<p class="p1"><span class="Apple-converted-space">          </span>datasets: [{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>label: 'Max Weight',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>data: filteredLogs.map(l =&gt; l.weight),</p>
+<p class="p1"><span class="Apple-converted-space">            </span>borderColor: '#00ff88',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>backgroundColor: 'rgba(0, 255, 136, 0.1)',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>fill: true,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tension: 0.3,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>pointRadius: 4</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}]</p>
+<p class="p1"><span class="Apple-converted-space">        </span>},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>options: {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>responsive: true,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>maintainAspectRatio: false,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>plugins: { legend: { display: false } },</p>
+<p class="p1"><span class="Apple-converted-space">          </span>scales: {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>x: { ticks: { color: '#8a8f9e', font: { size: 10 } }, grid: { display: false } },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>y: { ticks: { color: '#8a8f9e', font: { size: 10 } }, grid: { color: '#2e3342' } }</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- HISTORY BOX &amp; ENTRY DELETION --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function renderHistoryBox() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const container = document.getElementById('historyLogBox');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const filtered = appState.logs.filter(l =&gt; l.exerciseName === appState.currentExercise).reverse();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (filtered.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>container.innerHTML = '&lt;div style="color:var(--modal-subtext); font-size:0.8rem;"&gt;No past entries yet.&lt;/div&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>container.innerHTML = filtered.map(item =&gt; `</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="history-item"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;strong&gt;${item.weight} ${item.unit} × ${item.reps}&lt;/strong&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span style="color:var(--modal-subtext); font-size:0.75rem; margin-left:6px;"&gt;(${item.variation})&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span style="color:var(--modal-subtext); font-size:0.75rem; margin-right:8px;"&gt;${item.date}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="del-btn" onclick="deleteLog('${item.id}')"&gt;✕&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>`).join('');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function saveLogEntry() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const newEntry = {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>id: 'log_' + Date.now(),</p>
+<p class="p1"><span class="Apple-converted-space">        </span>date: document.getElementById('dateInput').value,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>exerciseName: appState.currentExercise,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>bodyPart: appState.currentMuscle,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>variation: document.getElementById('varSelect').value,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>weight: parseFloat(document.getElementById('weightInput').value) || 0,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>unit: document.getElementById('unitSelect').value,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>reps: document.getElementById('repsInput').value || '1'</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>appState.logs.push(newEntry);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>localStorage.setItem('myolog_logs', JSON.stringify(appState.logs));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderRecentChips();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>checkBackupPrompt();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderGraph();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderHistoryBox();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function deleteLog(id) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>appState.logs = appState.logs.filter(l =&gt; l.id !== id);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>localStorage.setItem('myolog_logs', JSON.stringify(appState.logs));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderGraph();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderHistoryBox();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderRecentChips();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- WORKOUT HISTORY MODAL --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function openWorkoutHistory() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const container = document.getElementById('historyModalBody');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const grouped = {};</p>
+<p class="p1"><span class="Apple-converted-space">      </span>appState.logs.forEach(log =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (!grouped[log.date]) grouped[log.date] = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>grouped[log.date].push(log);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const dates = Object.keys(grouped).sort().reverse();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (dates.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>container.innerHTML = '&lt;div style="color:var(--modal-subtext); text-align:center;"&gt;No completed workouts logged yet.&lt;/div&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>container.innerHTML = dates.map(date =&gt; `</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div style="background:var(--modal-card); border:1px solid var(--modal-border); padding:14px; border-radius:14px; margin-bottom:12px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="font-weight:800; color:var(--modal-accent); margin-bottom:8px; border-bottom:1px solid var(--modal-border); padding-bottom:4px;"&gt;🗓️ ${date}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>${grouped[date].map(item =&gt; `</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div style="display:flex; justify-space-between; font-size:0.85rem; padding:4px 0;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;span&gt;${item.exerciseName} (${item.variation})&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;strong&gt;${item.weight}${item.unit} ×${item.reps}&lt;/strong&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`).join('')}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>`).join('');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('historyModal').classList.add('active');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function closeHistoryModal() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('historyModal').classList.remove('active');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* --- BACKUP EXPORT &amp; IMPORT --- */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function exportData() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (appState.logs.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>alert("No workout data logged yet to back up!");</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState.logs));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const downloadAnchor = document.createElement('a');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>downloadAnchor.setAttribute("href", dataStr);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>downloadAnchor.setAttribute("download", `myolog_backup_${new Date().toISOString().split('T')[0]}.json`);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.body.appendChild(downloadAnchor);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>downloadAnchor.click();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>downloadAnchor.remove();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>appState.lastBackupCount = appState.logs.length;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>localStorage.setItem('myolog_backup_count', appState.lastBackupCount.toString());</p>
+<p class="p1"><span class="Apple-converted-space">      </span>checkBackupPrompt();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function triggerImport() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('importFileInput').click();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function importData(event) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const file = event.target.files[0];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!file) return;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const reader = new FileReader();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>reader.onload = function(e) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const importedLogs = JSON.parse(e.target.result);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (Array.isArray(importedLogs)) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>appState.logs = importedLogs;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>localStorage.setItem('myolog_logs', JSON.stringify(appState.logs));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderRecentChips();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>alert("Backup restored successfully!");</p>
+<p class="p1"><span class="Apple-converted-space">          </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>alert("Invalid backup file format.");</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} catch (err) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>alert("Error reading file: " + err.message);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p1"><span class="Apple-converted-space">      </span>reader.readAsText(file);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
