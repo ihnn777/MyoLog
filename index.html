@@ -15,6 +15,7 @@
 --card-border-dark: #262a36;
 --accent-neon: #00ff88;
 --accent-cyan: #00e5ff;
+--accent-blue: #2563eb; /* Solid Blue Color */
 --text-main: #f0f2f5;
 --text-muted: #8a8f9e;
 --radius: 16px;
@@ -35,6 +36,7 @@
 --card-border-dark: #e1e4ea;
 --accent-neon: #00a859;
 --accent-cyan: #0088cc;
+--accent-blue: #1d4ed8;
 --text-main: #111827;
 --text-muted: #6b7280;
 
@@ -93,9 +95,9 @@ h1 {
 font-size: 1.5rem;
 font-weight: 900;
 letter-spacing: -0.5px;
-background: linear-gradient(135deg, var(--accent-neon), var(--accent-cyan));
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
+color: var(--accent-blue);
+background: none;
+-webkit-text-fill-color: initial;
 }
 
 .header-actions {
@@ -256,7 +258,7 @@ letter-spacing: 0.5px;
 fill: #000000;
 }
 
-/* --- FLOATING POP-UP MODAL WINDOW (FULLY VISIBLE BOTTOM EDGE) --- */
+/* --- FLOATING POP-UP MODAL WINDOW --- */
 .modal-overlay {
 position: fixed;
 top: 0;
@@ -267,7 +269,7 @@ background: rgba(0, 0, 0, 0.75);
 backdrop-filter: blur(8px);
 display: none;
 justify-content: center;
-align-items: center; /* Center vertically on screen */
+align-items: center;
 padding: 16px;
 z-index: 1000;
 opacity: 0;
@@ -281,14 +283,14 @@ opacity: 1;
 
 .modal-window {
 background: var(--modal-bg);
-border-radius: 24px; /* Fully rounded on all 4 corners */
+border-radius: 24px;
 width: 100%;
 max-width: 460px;
-max-height: 85vh; /* Floating card framed cleanly inside viewport */
+max-height: 85vh;
 display: flex;
 flex-direction: column;
 overflow: hidden;
-border: 2px solid var(--modal-border); /* Visible edge framing all sides */
+border: 2px solid var(--modal-border);
 box-shadow: 0 16px 48px rgba(0,0,0,0.7);
 transform: scale(0.95) translateY(10px);
 transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
@@ -397,17 +399,6 @@ gap: 8px;
 }
 
 /* EXERCISE LOGGING & GRAPH VIEW */
-.quick-ref-box {
-background: var(--modal-card);
-border: 1px solid var(--modal-border);
-border-radius: 12px;
-padding: 12px;
-font-size: 0.85rem;
-color: var(--modal-subtext);
-display: flex;
-justify-content: space-between;
-}
-
 .graph-card {
 background: var(--modal-card);
 border: 1px solid var(--modal-border);
@@ -477,6 +468,15 @@ border-radius: 10px;
 font-size: 1.1rem;
 font-weight: 700;
 outline: none;
+box-sizing: border-box;
+}
+
+/* Date input styling to fit inside container padding */
+input[type="date"].num-input {
+max-width: 100%;
+appearance: none;
+-webkit-appearance: none;
+padding: 10px 12px;
 }
 
 .unit-select {
@@ -488,7 +488,7 @@ border-radius: 10px;
 font-weight: 600;
 }
 
-/* Quick Increment Chips */
+/* Quick Increment Chips - Coloured Button Style */
 .increment-chips {
 display: flex;
 gap: 6px;
@@ -497,18 +497,21 @@ justify-content: space-between;
 
 .chip-btn {
 flex: 1;
-background: var(--modal-bg);
-border: 1px solid var(--modal-border);
-color: var(--modal-accent);
+background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 229, 255, 0.15));
+border: 1px solid var(--accent-neon);
+color: var(--accent-neon);
 padding: 10px 0;
-border-radius: 8px;
-font-size: 0.8rem;
-font-weight: 700;
+border-radius: 10px;
+font-size: 0.85rem;
+font-weight: 800;
 cursor: pointer;
+transition: all 0.15s ease;
 }
 
 .chip-btn:active {
-background: var(--modal-border);
+background: var(--accent-neon);
+color: #000;
+transform: scale(0.96);
 }
 
 .save-btn {
@@ -534,7 +537,7 @@ background: var(--modal-card);
 border: 1px solid var(--modal-border);
 border-radius: 16px;
 padding: 12px;
-max-height: 140px;
+max-height: 160px;
 overflow-y: auto;
 display: flex;
 flex-direction: column;
@@ -596,8 +599,8 @@ font-size: 0.8rem;
 <!-- ROBOTIC HALF-FRONT / HALF-BACK BODY MAP CARD -->
 <div class="body-map-card">
 <div class="map-legend">
-<span>◀ FRONT VIEW</span>
-<span>BACK VIEW ▶</span>
+<span>FRONT VIEW</span>
+<span>BACK VIEW</span>
 </div>
 
 <div class="svg-container">
@@ -628,7 +631,10 @@ font-size: 0.8rem;
 
 <!-- Quad & Adductors -->
 <rect x="76" y="174" width="42" height="92" rx="10" class="muscle-plate" data-muscle="Quads"/>
-<text x="97" y="220" class="plate-label">Quad</text>
+<text x="97" y="214" class="plate-label">
+  <tspan x="97" dy="0">Quad</tspan>
+  <tspan x="97" dy="10">/Add</tspan>
+</text>
 
 <!-- Calf (Front) -->
 <rect x="84" y="272" width="34" height="84" rx="10" class="muscle-plate" data-muscle="Calves"/>
@@ -637,7 +643,7 @@ font-size: 0.8rem;
 <!-- ================= RIGHT HALF: BACK VIEW ================= -->
 <!-- Upper Back / Traps -->
 <rect x="122" y="50" width="44" height="44" rx="8" class="muscle-plate" data-muscle="Upper Back"/>
-<text x="144" y="72" class="plate-label">Traps</text>
+<text x="144" y="72" class="plate-label">Upper</text>
 
 <!-- Shoulder / Rear Delt -->
 <rect x="168" y="50" width="44" height="44" rx="10" class="muscle-plate" data-muscle="Shoulders"/>
@@ -645,7 +651,10 @@ font-size: 0.8rem;
 
 <!-- Mid Back & Lats -->
 <rect x="122" y="98" width="44" height="44" rx="8" class="muscle-plate" data-muscle="Mid Back"/>
-<text x="144" y="120" class="plate-label">Lats</text>
+<text x="144" y="120" class="plate-label">
+  <tspan x="144" dy="-4">Mid</tspan>
+  <tspan x="144" dy="10">/LD</tspan>
+</text>
 
 <!-- Tricep & Forearm -->
 <rect x="170" y="98" width="42" height="50" rx="8" class="muscle-plate" data-muscle="Arms"/>
@@ -653,7 +662,7 @@ font-size: 0.8rem;
 
 <!-- Lower Back (Erectors) -->
 <rect x="122" y="146" width="44" height="24" rx="8" class="muscle-plate" data-muscle="Lower Back"/>
-<text x="144" y="158" class="plate-label">L-Back</text>
+<text x="144" y="158" class="plate-label">Lower</text>
 
 <!-- Glute -->
 <rect x="122" y="174" width="42" height="42" rx="10" class="muscle-plate" data-muscle="Glutes"/>
@@ -714,11 +723,11 @@ exercises: ["Overhead Shoulder Press", "Lateral Raises", "Front Raises", "Face P
 },
 "Arms": {
 isSmall: true,
-exercises: ["Barbell Bicep Curl", "Hammer Curls", "Tricep Pushdown", "Skullcrushers", "Wrist Curls"]
+exercises: ["Hammer Curls", "Skullcrushers", "Wrist Curls"]
 },
 "Core": {
 isSmall: true,
-exercises: ["Cable Woodchoppers", "Hanging Leg Raise", "Ab Wheel Rollout", "Russian Twists"]
+exercises: ["Cable Woodchoppers", "Hanging Leg Raise", "Ab Wheel Rollout", "Russian Twists", "Plank", "Side Plank Hold"]
 },
 "Quads": {
 isSmall: false,
@@ -738,7 +747,7 @@ exercises: ["Standard Deadlift", "Conventional Deadlift", "Back Extension", "Goo
 },
 "Glutes": {
 isSmall: false,
-exercises: ["Hip Thrust", "Barbell Hip Thrust", "Bulgarian Split Squat", "Single Leg RDL", "Glute Cable Kickback", "Standard Deadlift"]
+exercises: ["Hip Thrust", "Bulgarian Split Squat", "Single Leg RDL", "Standard Deadlift", "Romanian Deadlift"]
 },
 "Hamstrings": {
 isSmall: false,
@@ -896,7 +905,7 @@ function showMuscleExerciseList() {
 openMuscleModal(appState.currentMuscle);
 }
 
-/* --- STEP 2: EXERCISE LOGGING & GRAPH VIEW --- */
+/* --- STEP 2: EXERCISE LOGGING VIEW --- */
 function openExerciseLogging(exerciseName) {
 appState.currentExercise = exerciseName;
 document.getElementById('modalTitle').textContent = exerciseName;
@@ -919,31 +928,27 @@ if (lastLog) {
 defaultVariation = lastLog.variation;
 } else if (exerciseName.toLowerCase().includes("hip thrust")) {
 defaultVariation = "Machine";
+} else if (exerciseName.toLowerCase().includes("push up") || exerciseName.toLowerCase().includes("plank")) {
+defaultVariation = "Bodyweight";
 }
 
 const body = document.getElementById('modalBody');
 body.innerHTML = `
-<div class="quick-ref-box">
-<span>Last Logged:</span>
-<strong>${lastLog ? `${lastLog.weight}${lastLog.unit} × ${lastLog.reps} (${lastLog.date})` : 'No past logs'}</strong>
-</div>
-
-<div class="graph-card">
-<canvas id="progressionChart"></canvas>
-</div>
+<div class="section-title">Past History</div>
+<div id="historyLogBox" class="history-card"></div>
 
 <div class="variation-select-group">
-<select id="varSelect" class="select-style" onchange="renderGraph()">
+<select id="varSelect" class="select-style" onchange="handleVariationOrExerciseChange()">
 ${VARIATIONS.map(v => `<option value="${v}" ${defaultVariation === v ? 'selected' : ''}>${v}</option>`).join('')}
 </select>
 </div>
 
 <div class="logging-form">
 <div class="input-row">
-<div class="input-group">
+<div id="weightGroup" class="input-group">
 <label class="input-label">Weight</label>
 <div class="field-with-unit">
-<input type="number" id="weightInput" class="num-input" value="${lastLog ? lastLog.weight : 20}" step="0.5">
+<input type="number" id="weightInput" class="num-input" value="${lastLog && lastLog.weight ? lastLog.weight : 20}" step="0.5">
 <select id="unitSelect" class="unit-select">
 <option value="kg" ${lastLog && lastLog.unit === 'kg' ? 'selected' : ''}>kg</option>
 <option value="lb" ${lastLog && lastLog.unit === 'lb' ? 'selected' : ''}>lb</option>
@@ -952,12 +957,17 @@ ${VARIATIONS.map(v => `<option value="${v}" ${defaultVariation === v ? 'selected
 </div>
 <div class="input-group">
 <label class="input-label">Reps</label>
-<input type="text" id="repsInput" class="num-input" value="${lastLog ? lastLog.reps : '8-10'}">
+<input type="text" id="repsInput" class="num-input" value="${lastLog && lastLog.reps ? lastLog.reps : '8-10'}">
 </div>
 </div>
 
-<div class="increment-chips">
+<div id="incrementChipsGroup" class="increment-chips">
 ${increments.map(inc => `<button class="chip-btn" onclick="adjustWeight(${inc})">${inc > 0 ? '+' : ''}${inc}kg</button>`).join('')}
+</div>
+
+<div id="timeGroup" class="input-group" style="display:none;">
+<label class="input-label">Duration (Seconds)</label>
+<input type="number" id="timeInput" class="num-input" placeholder="e.g. 60" value="${lastLog && lastLog.time ? lastLog.time : ''}">
 </div>
 
 <div class="input-group">
@@ -968,13 +978,52 @@ ${increments.map(inc => `<button class="chip-btn" onclick="adjustWeight(${inc})"
 <button class="save-btn" onclick="saveLogEntry()">Save Entry</button>
 </div>
 
-<div class="section-title">Past History</div>
-<div id="historyLogBox" class="history-card"></div>
+<div class="section-title">Progression Trend</div>
+<div class="graph-card">
+<canvas id="progressionChart"></canvas>
+</div>
 `;
 
 openModal();
+handleVariationOrExerciseChange();
 renderGraph();
 renderHistoryBox();
+}
+
+function handleVariationOrExerciseChange() {
+const selectedVar = document.getElementById('varSelect').value;
+const exName = appState.currentExercise.toLowerCase();
+const isTimedEx = exName.includes("plank") || exName.includes("hold");
+
+const weightGroup = document.getElementById('weightGroup');
+const chipsGroup = document.getElementById('incrementChipsGroup');
+const timeGroup = document.getElementById('timeGroup');
+
+if (selectedVar === "Bodyweight") {
+// Rule 1: Bodyweight hides weight input and increment suggestions
+weightGroup.style.display = 'none';
+chipsGroup.style.display = 'none';
+
+if (isTimedEx) {
+timeGroup.style.display = 'flex';
+} else {
+timeGroup.style.display = 'none';
+}
+} else {
+// Weighted variations
+weightGroup.style.display = 'flex';
+
+if (isTimedEx) {
+// Rule 2: Plank/Hold replaces increment chips with time input
+chipsGroup.style.display = 'none';
+timeGroup.style.display = 'flex';
+} else {
+chipsGroup.style.display = 'flex';
+timeGroup.style.display = 'none';
+}
+}
+
+renderGraph();
 }
 
 function adjustWeight(amount) {
@@ -989,16 +1038,34 @@ function renderGraph() {
 const selectedVar = document.getElementById('varSelect').value;
 const filteredLogs = appState.logs.filter(l => l.exerciseName === appState.currentExercise && l.variation === selectedVar);
 
-const ctx = document.getElementById('progressionChart').getContext('2d');
+const canvas = document.getElementById('progressionChart');
+if (!canvas) return;
+
+const ctx = canvas.getContext('2d');
 if (appState.chartInstance) appState.chartInstance.destroy();
+
+const isTimedEx = appState.currentExercise.toLowerCase().includes("plank") || appState.currentExercise.toLowerCase().includes("hold");
+const isBodyweight = selectedVar === "Bodyweight";
+
+// Determine metric for graph (Time, Reps, or Weight)
+let chartLabel = 'Max Weight';
+let dataPoints = filteredLogs.map(l => l.weight);
+
+if (isTimedEx) {
+chartLabel = 'Duration (s)';
+dataPoints = filteredLogs.map(l => parseFloat(l.time) || 0);
+} else if (isBodyweight) {
+chartLabel = 'Reps';
+dataPoints = filteredLogs.map(l => parseInt(l.reps) || 0);
+}
 
 appState.chartInstance = new Chart(ctx, {
 type: 'line',
 data: {
 labels: filteredLogs.map(l => l.date),
 datasets: [{
-label: 'Max Weight',
-data: filteredLogs.map(l => l.weight),
+label: chartLabel,
+data: dataPoints,
 borderColor: '#00ff88',
 backgroundColor: 'rgba(0, 255, 136, 0.1)',
 fill: true,
@@ -1021,6 +1088,8 @@ y: { ticks: { color: '#8a8f9e', font: { size: 10 } }, grid: { color: '#2e3342' }
 /* --- HISTORY BOX & ENTRY DELETION --- */
 function renderHistoryBox() {
 const container = document.getElementById('historyLogBox');
+if (!container) return;
+
 const filtered = appState.logs.filter(l => l.exerciseName === appState.currentExercise).reverse();
 
 if (filtered.length === 0) {
@@ -1031,7 +1100,7 @@ return;
 container.innerHTML = filtered.map(item => `
 <div class="history-item">
 <div>
-<strong>${item.weight} ${item.unit} × ${item.reps}</strong>
+<strong>${item.variation === 'Bodyweight' ? '' : item.weight + ' ' + item.unit + ' × '}${item.reps} reps ${item.time ? ' (' + item.time + 's)' : ''}</strong>
 <span style="color:var(--modal-subtext); font-size:0.75rem; margin-left:6px;">(${item.variation})</span>
 </div>
 <div>
@@ -1043,15 +1112,20 @@ container.innerHTML = filtered.map(item => `
 }
 
 function saveLogEntry() {
+const selectedVar = document.getElementById('varSelect').value;
+const weightVal = selectedVar === 'Bodyweight' ? 0 : (parseFloat(document.getElementById('weightInput').value) || 0);
+const timeVal = document.getElementById('timeInput') ? document.getElementById('timeInput').value : '';
+
 const newEntry = {
 id: 'log_' + Date.now(),
 date: document.getElementById('dateInput').value,
 exerciseName: appState.currentExercise,
 bodyPart: appState.currentMuscle,
-variation: document.getElementById('varSelect').value,
-weight: parseFloat(document.getElementById('weightInput').value) || 0,
+variation: selectedVar,
+weight: weightVal,
 unit: document.getElementById('unitSelect').value,
-reps: document.getElementById('repsInput').value || '1'
+reps: document.getElementById('repsInput').value || '1',
+time: timeVal
 };
 
 appState.logs.push(newEntry);
@@ -1089,9 +1163,9 @@ container.innerHTML = dates.map(date => `
 <div style="background:var(--modal-card); border:1px solid var(--modal-border); padding:14px; border-radius:14px; margin-bottom:12px;">
 <div style="font-weight:800; color:var(--modal-accent); margin-bottom:8px; border-bottom:1px solid var(--modal-border); padding-bottom:4px;">🗓️ ${date}</div>
 ${grouped[date].map(item => `
-<div style="display:flex; justify-space-between; font-size:0.85rem; padding:4px 0;">
+<div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:4px 0;">
 <span>${item.exerciseName} (${item.variation})</span>
-<strong>${item.weight}${item.unit} ×${item.reps}</strong>
+<strong>${item.variation === 'Bodyweight' ? '' : item.weight + item.unit + ' × '}${item.reps}${item.time ? ' (' + item.time + 's)' : ''}</strong>
 </div>
 `).join('')}
 </div>
