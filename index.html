@@ -164,6 +164,12 @@ flex-direction: column;
 gap: 8px;
 }
 
+.section-title-row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
 .section-title {
 font-size: 0.72rem;
 text-transform: uppercase;
@@ -180,6 +186,17 @@ color: var(--modal-subtext);
 font-weight: 800;
 margin-top: 2px;
 margin-bottom: -2px;
+}
+
+.home-export-btn {
+background: rgba(0, 255, 136, 0.12);
+border: 1px solid var(--accent-neon);
+color: var(--accent-neon);
+font-size: 0.75rem;
+font-weight: 700;
+padding: 4px 10px;
+border-radius: 8px;
+cursor: pointer;
 }
 
 .recent-chips {
@@ -364,7 +381,26 @@ cursor: pointer;
 line-height: 1;
 }
 
-/* HIGH-DENSITY COMPACT MODAL BODY FOR ZERO SCROLLING */
+.header-text-btn {
+background: transparent;
+border: 1px solid var(--modal-border);
+color: var(--accent-neon);
+font-size: 0.75rem;
+font-weight: 800;
+padding: 4px 10px;
+border-radius: 8px;
+cursor: pointer;
+margin-left: auto;
+margin-right: 8px;
+}
+
+.header-text-btn.active {
+background: #ff4d4d;
+color: #fff;
+border-color: #ff4d4d;
+}
+
+/* COMPACT MODAL BODY FOR ZERO SCROLLING */
 .modal-body {
 padding: 10px 12px;
 display: flex;
@@ -415,6 +451,21 @@ font-size: 0.9rem;
 
 .exercise-item:active {
 background: var(--modal-border);
+}
+
+.delete-ex-btn {
+background: rgba(255, 77, 77, 0.2);
+border: 1px solid #ff4d4d;
+color: #ff4d4d;
+width: 24px;
+height: 24px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.75rem;
+font-weight: 800;
+cursor: pointer;
 }
 
 .custom-ex-card {
@@ -487,8 +538,8 @@ box-sizing: border-box;
 }
 
 .num-input-lg {
-font-size: 1.4rem !important;
-padding: 10px 12px !important;
+font-size: 1.35rem !important;
+padding: 8px 10px !important;
 border-color: rgba(0, 255, 136, 0.4);
 background: rgba(0, 0, 0, 0.2);
 }
@@ -623,7 +674,7 @@ background: var(--modal-card);
 border: 1px solid var(--modal-border);
 border-radius: 12px;
 padding: 6px 8px 8px 8px;
-height: 125px;
+height: 120px;
 min-width: 100%;
 box-sizing: border-box;
 position: relative;
@@ -774,7 +825,10 @@ flex-shrink: 0;
 
 <!-- BOTTOM HOMEPAGE SEARCH BAR -->
 <div class="recent-bar">
+<div class="section-title-row">
 <div class="section-title">Quick Search</div>
+<button class="home-export-btn" onclick="exportData()">💾 Export File</button>
+</div>
 <input type="text" id="homeSearchInput" class="home-search-input" placeholder="🔍 Search exercise..." oninput="handleHomeSearch(this.value)">
 <div id="searchResultsList" class="exercise-list" style="display:none; margin-top:6px;"></div>
 </div>
@@ -789,13 +843,14 @@ flex-shrink: 0;
 </div>
 
 <!-- POP-UP OVERLAY MODAL -->
-<div id="appModal" class="modal-overlay">
+<div id="appModal" class="modal-overlay" onclick="handleOverlayClick(event, 'appModal')">
 <div class="modal-window">
 <div class="modal-header">
 <div class="modal-title-group">
 <button id="modalBackBtn" class="icon-btn" style="display:none;" onclick="showMuscleExerciseList()">← Back</button>
 <div id="modalTitle" class="modal-title">Muscle Group</div>
 </div>
+<button id="modalEditBtn" class="header-text-btn" style="display:none;" onclick="toggleExerciseEditMode()">Edit</button>
 <button class="close-btn" onclick="closeModal()">×</button>
 </div>
 
@@ -806,7 +861,7 @@ flex-shrink: 0;
 </div>
 
 <!-- WORKOUT HISTORY MODAL -->
-<div id="historyModal" class="modal-overlay">
+<div id="historyModal" class="modal-overlay" onclick="handleOverlayClick(event, 'historyModal')">
 <div class="modal-window">
 <div class="modal-header">
 <div class="modal-title">📅 Workout History</div>
@@ -819,7 +874,7 @@ flex-shrink: 0;
 </div>
 
 <!-- EDIT ENTRY MODAL -->
-<div id="editModal" class="modal-overlay">
+<div id="editModal" class="modal-overlay" onclick="handleOverlayClick(event, 'editModal')">
 <div class="modal-window">
 <div class="modal-header">
 <div class="modal-title">✏️ Edit Log Entry</div>
@@ -885,15 +940,18 @@ const VARIATIONS = ["Machine", "Barbell", "Dumbbell", "Cable", "Bodyweight"];
 // App State Management
 let initialLogs = localStorage.getItem('myolog_logs') || localStorage.getItem('siuhey_logs') || '[]';
 let customExStorage = JSON.parse(localStorage.getItem('myolog_custom_ex') || '{}');
+let hiddenExStorage = JSON.parse(localStorage.getItem('myolog_hidden_ex') || '[]');
 
 let appState = {
 logs: JSON.parse(initialLogs),
 customEx: customExStorage,
+hiddenEx: hiddenExStorage,
 lastBackupCount: parseInt(localStorage.getItem('myolog_backup_count') || '0'),
 currentMuscle: '',
 currentExercise: '',
 editingLogId: null,
-chartInstance: null
+chartInstance: null,
+isEditMode: false
 };
 
 /* --- INITIALIZATION --- */
@@ -913,43 +971,88 @@ openMuscleModal(muscle);
 }
 
 function getAllExercises(muscle) {
-if (!muscle) {
 let all = [];
+if (!muscle) {
 Object.keys(EXERCISE_DB).forEach(m => {
 all = all.concat(EXERCISE_DB[m].exercises);
 if (appState.customEx[m]) all = all.concat(appState.customEx[m]);
 });
-return [...new Set(all)];
-}
+} else {
 const defaults = EXERCISE_DB[muscle] ? EXERCISE_DB[muscle].exercises : [];
 const customs = appState.customEx[muscle] || [];
-return [...new Set([...defaults, ...customs])];
+all = [...defaults, ...customs];
 }
 
-/* --- HOMEPAGE SEARCH --- */
+return [...new Set(all)].filter(ex => !appState.hiddenEx.includes(ex));
+}
+
+/* --- HOMEPAGE SEARCH & AUTOMATIC CLEARING --- */
 function handleHomeSearch(query) {
 const resultsContainer = document.getElementById('searchResultsList');
-if (!query.trim()) {
+const trimmed = query.trim();
+
+if (!trimmed) {
 resultsContainer.style.display = 'none';
 resultsContainer.innerHTML = '';
 return;
 }
 
 const allEx = getAllExercises();
-const filtered = allEx.filter(e => e.toLowerCase().includes(query.toLowerCase())).sort();
-
-if (filtered.length === 0) {
-resultsContainer.style.display = 'none';
-return;
-}
+const filtered = allEx.filter(e => e.toLowerCase().includes(trimmed.toLowerCase())).sort();
 
 resultsContainer.style.display = 'flex';
-resultsContainer.innerHTML = filtered.slice(0, 5).map(ex => `
-<div class="exercise-item" onclick="openExerciseLogging('${ex}')">
+
+if (filtered.length === 0) {
+resultsContainer.innerHTML = `
+<div class="exercise-item" onclick="createAndLogSearchExercise('${trimmed.replace(/'/g, "\\'")}')">
+<span style="color:var(--accent-neon);">+ Add "${trimmed}"</span>
+<span style="color:var(--modal-subtext); font-size:0.8rem;">➔</span>
+</div>
+`;
+} else {
+let html = filtered.slice(0, 5).map(ex => `
+<div class="exercise-item" onclick="openExerciseLoggingFromSearch('${ex}')">
 <span>${ex}</span>
 <span style="color:var(--modal-subtext); font-size:0.8rem;">➔</span>
 </div>
 `).join('');
+
+if (!filtered.some(e => e.toLowerCase() === trimmed.toLowerCase())) {
+html += `
+<div class="exercise-item" onclick="createAndLogSearchExercise('${trimmed.replace(/'/g, "\\'")}')" style="border-top:1px dashed var(--card-border-dark);">
+<span style="color:var(--accent-neon);">+ Add "${trimmed}"</span>
+<span style="color:var(--modal-subtext); font-size:0.8rem;">➔</span>
+</div>
+`;
+}
+resultsContainer.innerHTML = html;
+}
+}
+
+function clearHomeSearch() {
+const searchInput = document.getElementById('homeSearchInput');
+const resultsContainer = document.getElementById('searchResultsList');
+if (searchInput) searchInput.value = '';
+if (resultsContainer) {
+resultsContainer.style.display = 'none';
+resultsContainer.innerHTML = '';
+}
+}
+
+function openExerciseLoggingFromSearch(name) {
+clearHomeSearch();
+openExerciseLogging(name);
+}
+
+function createAndLogSearchExercise(name) {
+const muscle = "Chest";
+if (!appState.customEx[muscle]) appState.customEx[muscle] = [];
+if (!appState.customEx[muscle].includes(name)) {
+appState.customEx[muscle].push(name);
+localStorage.setItem('myolog_custom_ex', JSON.stringify(appState.customEx));
+}
+clearHomeSearch();
+openExerciseLogging(name);
 }
 
 /* --- RECENT CHIPS & BACKUP WARNING --- */
@@ -957,7 +1060,9 @@ function renderRecentChips() {
 const container = document.getElementById('recentChips');
 container.innerHTML = '';
 
-const recentNames = [...new Set(appState.logs.slice().reverse().map(l => l.exerciseName))].slice(0, 4);
+const recentNames = [...new Set(appState.logs.slice().reverse().map(l => l.exerciseName))]
+.filter(name => !appState.hiddenEx.includes(name))
+.slice(0, 4);
 
 if (recentNames.length === 0) {
 container.innerHTML = '<span style="color:var(--text-muted); font-size:0.8rem;">Tap a muscle plate on the robot map to start!</span>';
@@ -978,7 +1083,7 @@ const unbackedLogs = appState.logs.length - appState.lastBackupCount;
 document.getElementById('backupBanner').style.display = unbackedLogs >= 10 ? 'flex' : 'none';
 }
 
-/* --- MODAL MANAGEMENT --- */
+/* --- MODAL OVERLAY & CLICK OUTSIDE TO CLOSE --- */
 function openModal(modalId = 'appModal') {
 document.getElementById(modalId).classList.add('active');
 document.body.classList.add('modal-open');
@@ -987,28 +1092,50 @@ document.body.classList.add('modal-open');
 function closeModal() {
 document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
 document.body.classList.remove('modal-open');
+appState.isEditMode = false;
+clearHomeSearch();
 if (appState.chartInstance) {
 appState.chartInstance.destroy();
 appState.chartInstance = null;
 }
 }
 
-/* --- STEP 1: MUSCLE EXERCISE LIST VIEW --- */
+function handleOverlayClick(event, modalId) {
+if (event.target.id === modalId) {
+closeModal();
+}
+}
+
+/* --- STEP 1: MUSCLE EXERCISE LIST VIEW WITH EDIT DELETE MODE --- */
 function openMuscleModal(muscle) {
 appState.currentMuscle = muscle;
+appState.isEditMode = false;
+
 document.getElementById('modalTitle').textContent = muscle;
 document.getElementById('modalBackBtn').style.display = 'none';
 
-const exercises = getAllExercises(muscle);
+const editBtn = document.getElementById('modalEditBtn');
+editBtn.style.display = 'block';
+editBtn.textContent = 'Edit';
+editBtn.classList.remove('active');
 
+renderMuscleExerciseList();
+openModal('appModal');
+}
+
+function renderMuscleExerciseList() {
+const exercises = getAllExercises(appState.currentMuscle);
 const body = document.getElementById('modalBody');
+
 body.innerHTML = `
 <input type="text" class="search-input" placeholder="🔍 Search exercises..." oninput="filterExercises(this.value)">
 <div id="exerciseList" class="exercise-list">
 ${exercises.sort().map(ex => `
-<div class="exercise-item" onclick="openExerciseLogging('${ex}')">
-<span>${ex}</span>
-<span style="color:var(--modal-subtext); font-size:0.8rem;">➔</span>
+<div class="exercise-item" onclick="handleExerciseClick('${ex.replace(/'/g, "\\'")}')">
+<span>${ex}</span>${appState.isEditMode 
+? `<button class="delete-ex-btn" onclick="deleteExerciseType(event, '${ex.replace(/'/g, "\\'")}')">✕</button>`
+: `<span style="color:var(--modal-subtext); font-size:0.8rem;">➔</span>`
+}
 </div>
 `).join('')}
 </div>
@@ -1021,8 +1148,34 @@ ${exercises.sort().map(ex => `
 </div>
 </div>
 `;
+}
 
-openModal('appModal');
+function toggleExerciseEditMode() {
+appState.isEditMode = !appState.isEditMode;
+const editBtn = document.getElementById('modalEditBtn');
+if (appState.isEditMode) {
+editBtn.textContent = 'Done';
+editBtn.classList.add('active');
+} else {
+editBtn.textContent = 'Edit';
+editBtn.classList.remove('active');
+}
+renderMuscleExerciseList();
+}
+
+function deleteExerciseType(event, exerciseName) {
+event.stopPropagation();
+if (!appState.hiddenEx.includes(exerciseName)) {
+appState.hiddenEx.push(exerciseName);
+localStorage.setItem('myolog_hidden_ex', JSON.stringify(appState.hiddenEx));
+}
+renderMuscleExerciseList();
+renderRecentChips();
+}
+
+function handleExerciseClick(exerciseName) {
+if (appState.isEditMode) return;
+openExerciseLogging(exerciseName);
 }
 
 function filterExercises(query) {
@@ -1032,9 +1185,12 @@ const exercises = getAllExercises(muscle);
 const filtered = exercises.filter(e => e.toLowerCase().includes(query.toLowerCase()));
 
 list.innerHTML = filtered.map(ex => `
-<div class="exercise-item" onclick="openExerciseLogging('${ex}')">
+<div class="exercise-item" onclick="handleExerciseClick('${ex.replace(/'/g, "\\'")}')">
 <span>${ex}</span>
-<span style="color:var(--modal-subtext); font-size:0.8rem;">➔</span>
+${appState.isEditMode 
+? `<button class="delete-ex-btn" onclick="deleteExerciseType(event, '${ex.replace(/'/g, "\\'")}')">✕</button>`
+: `<span style="color:var(--modal-subtext); font-size:0.8rem;">➔</span>`
+}
 </div>
 `).join('');
 }
@@ -1080,14 +1236,18 @@ return "Barbell";
 return "Machine";
 }
 
-/* --- STEP 2: EXERCISE LOGGING VIEW --- */
+/* --- STEP 2: EXERCISE LOGGING VIEW WITH DYNAMIC SINGLE-LEG INCREMENTS --- */
 function openExerciseLogging(exerciseName) {
 appState.currentExercise = exerciseName;
+appState.isEditMode = false;
+
 document.getElementById('modalTitle').textContent = exerciseName;
 
 const backBtn = document.getElementById('modalBackBtn');
 backBtn.style.display = 'block';
 backBtn.textContent = `← ${appState.currentMuscle || 'Back'}`;
+
+document.getElementById('modalEditBtn').style.display = 'none';
 
 const exerciseLogs = appState.logs.filter(l => l.exerciseName === exerciseName);
 const lastLog = exerciseLogs.length > 0 ? exerciseLogs[exerciseLogs.length - 1] : null;
@@ -1096,25 +1256,62 @@ const isSmall = appState.currentMuscle && EXERCISE_DB[appState.currentMuscle]
 ? EXERCISE_DB[appState.currentMuscle].isSmall
 : true;
 
-const increments = isSmall ? [-2, -1, 0.5, 1, 2] : [-10, -2.5, 2.5, 5, 10];
+const exNameLower = exerciseName.toLowerCase();
+
+// CHECK IF THE EXERCISE IS A SINGLE-LEG / UNILATERAL MOVEMENT
+const isSingleLeg = exNameLower.includes("single") || 
+                    exNameLower.includes("lunge") || 
+                    exNameLower.includes("split") || 
+                    exNameLower.includes("one leg") || 
+                    exNameLower.includes("bulgarian");
+
+// EXACT 4 SYMMETRICAL INCREMENTS FOR WEIGHT
+let weightIncrements = [-10, -5, 5, 10];
+if (isSingleLeg) {
+weightIncrements = [-5, -2.5, 2.5, 5]; // Single-leg exercises get +- 2.5/5kg
+} else if (isSmall) {
+weightIncrements = [-2, -1, 1, 2];
+}
+
+const durationIncrements = [-10, -5, 5, 10];
 
 let defaultVariation = lastLog ? lastLog.variation : getContextualDefaultVariation(exerciseName);
 
-const exNameLower = exerciseName.toLowerCase();
 const isTimedEx = exNameLower.includes("plank") || exNameLower.includes("hold");
 const isPushUp = exNameLower.includes("push up");
 
 let defaultReps = '';
 if (!isTimedEx) {
 defaultReps = lastLog && lastLog.reps ? lastLog.reps : '10-12';
+} else {
+defaultReps = lastLog && lastLog.reps ? lastLog.reps : '';
 }
 
 const body = document.getElementById('modalBody');
 body.innerHTML = `
 <div id="lastEntryCard"></div>
 
-<!-- MAIN LOGGING FORM WITH PROMINENT NUMERICAL INPUTS AT TOP -->
+<!-- MAIN LOGGING FORM WITH DURATION / WEIGHT / REPS ORDERING -->
 <div class="logging-form">
+${isTimedEx ? `
+<!-- DURATION PROMINENTLY ABOVE REPS FOR TIMED EXERCISES -->
+<div id="timeGroup" class="input-group">
+<label class="input-label input-label-primary">Duration (Sec)</label>
+<input type="number" id="timeInput" class="num-input num-input-lg" placeholder="e.g. 60" value="${lastLog && lastLog.time ? lastLog.time : ''}">
+</div>
+
+<div id="timeChipsGroup" class="increment-chips">
+${durationIncrements.map(inc => `<button class="chip-btn" onclick="adjustDuration(${inc})">${inc > 0 ? '+' : ''}${inc}s</button>`).join('')}
+</div>
+
+<div class="input-row">
+<div class="input-group">
+<label class="input-label">Reps (Optional)</label>
+<input type="text" id="repsInput" class="num-input" placeholder="e.g. 1" value="${defaultReps}">
+</div>
+</div>
+` : `
+<!-- WEIGHT & REPS FOR REGULAR EXERCISES -->
 <div class="input-row">
 <div id="weightGroup" class="input-group">
 <label class="input-label input-label-primary">Weight</label>
@@ -1134,13 +1331,9 @@ body.innerHTML = `
 </div>
 
 <div id="incrementChipsGroup" class="increment-chips">
-${increments.map(inc => `<button class="chip-btn" onclick="adjustWeight(${inc})">${inc > 0 ? '+' : ''}${inc}kg</button>`).join('')}
+${weightIncrements.map(inc => `<button class="chip-btn" onclick="adjustWeight(${inc})">${inc > 0 ? '+' : ''}${inc}kg</button>`).join('')}
 </div>
-
-<div id="timeGroup" class="input-group" style="display:none;">
-<label class="input-label input-label-primary">Duration (Sec)</label>
-<input type="number" id="timeInput" class="num-input num-input-lg" placeholder="e.g. 60" value="${lastLog && lastLog.time ? lastLog.time : ''}">
-</div>
+`}
 
 ${isPushUp ? `
 <div id="inclinationGroup" class="input-group">
@@ -1165,7 +1358,6 @@ ${VARIATIONS.map(v => `<option value="${v}" ${defaultVariation === v ? 'selected
 <button class="save-btn" onclick="saveLogEntry()">Save Entry</button>
 </div>
 
-<!-- SECTION HEADER TITLE ABOVE GRAPH -->
 <div class="modal-section-title">Progression History</div>
 <div class="graph-scroll-container" id="graphScrollContainer">
 <div class="graph-card" id="graphCard">
@@ -1187,27 +1379,13 @@ const isTimedEx = exName.includes("plank") || exName.includes("hold");
 
 const weightGroup = document.getElementById('weightGroup');
 const chipsGroup = document.getElementById('incrementChipsGroup');
-const timeGroup = document.getElementById('timeGroup');
 
-if (selectedVar === "Bodyweight") {
-weightGroup.style.display = 'none';
-chipsGroup.style.display = 'none';
-
-if (isTimedEx) {
-timeGroup.style.display = 'flex';
-} else {
-timeGroup.style.display = 'none';
-}
-} else {
+if (selectedVar === "Bodyweight" && !isTimedEx) {
+if (weightGroup) weightGroup.style.display = 'none';
+if (chipsGroup) chipsGroup.style.display = 'none';
+} else if (weightGroup) {
 weightGroup.style.display = 'flex';
-
-if (isTimedEx) {
-chipsGroup.style.display = 'none';
-timeGroup.style.display = 'flex';
-} else {
-chipsGroup.style.display = 'flex';
-timeGroup.style.display = 'none';
-}
+if (chipsGroup) chipsGroup.style.display = 'flex';
 }
 
 renderGraph();
@@ -1215,12 +1393,21 @@ renderGraph();
 
 function adjustWeight(amount) {
 const input = document.getElementById('weightInput');
+if (!input) return;
 let val = parseFloat(input.value) || 0;
 val = Math.max(0, val + amount);
 input.value = val;
 }
 
-/* --- CHART.JS SCROLLABLE GRAPH RENDER (CHRONOLOGICAL SORT ENFORCED) --- */
+function adjustDuration(amount) {
+const input = document.getElementById('timeInput');
+if (!input) return;
+let val = parseInt(input.value) || 0;
+val = Math.max(0, val + amount);
+input.value = val;
+}
+
+/* --- CHART.JS SCROLLABLE GRAPH RENDER --- */
 function renderGraph() {
 const selectedVar = document.getElementById('varSelect').value;
 
@@ -1327,7 +1514,7 @@ scrollContainer.scrollLeft = scrollContainer.scrollWidth;
 }
 }
 
-/* --- RENDER SINGLE LAST ENTRY CARD --- */
+/* --- RENDER SINGLE LAST ENTRY CARD WITH TIME & REPS IN BRACKETS --- */
 function renderLastEntryCard() {
 const container = document.getElementById('lastEntryCard');
 if (!container) return;
@@ -1342,11 +1529,23 @@ return;
 }
 
 const item = filtered[filtered.length - 1];
+const isTimedEx = item.exerciseName.toLowerCase().includes("plank") || item.exerciseName.toLowerCase().includes("hold");
+
+let summaryText = '';
+if (isTimedEx) {
+summaryText = `${item.time ? item.time + 's' : ''}${item.reps ? ' (' + item.reps + ' reps)' : ''}`;
+} else if (item.variation === 'Bodyweight') {
+summaryText = `${item.reps ? item.reps + ' reps' : ''}`;
+} else {
+summaryText = `${item.weight} ${item.unit} × ${item.reps ? item.reps + ' reps' : ''}`;
+}
+
+if (item.inclination) summaryText += ` - ${item.inclination}`;
 
 container.innerHTML = `
 <div class="single-history-card">
 <div>
-<strong>${item.variation === 'Bodyweight' ? '' : item.weight + ' ' + item.unit + ' × '}${item.reps ? item.reps + ' reps' : ''}${item.time ? ' (' + item.time + 's)' : ''}${item.inclination ? ' - ' + item.inclination : ''}</strong>
+<strong>${summaryText}</strong>
 </div>
 <div>
 <span style="color:var(--modal-subtext); font-size:0.75rem; margin-right:8px;">${item.date}</span>
@@ -1358,7 +1557,7 @@ container.innerHTML = `
 
 function saveLogEntry() {
 const selectedVar = document.getElementById('varSelect').value;
-const weightVal = selectedVar === 'Bodyweight' ? 0 : (parseFloat(document.getElementById('weightInput').value) || 0);
+const weightVal = selectedVar === 'Bodyweight' ? 0 : (parseFloat(document.getElementById('weightInput') ? document.getElementById('weightInput').value : 0) || 0);
 const timeVal = document.getElementById('timeInput') ? document.getElementById('timeInput').value : '';
 const inclinationVal = document.getElementById('inclinationInput') ? document.getElementById('inclinationInput').value : '';
 
@@ -1369,7 +1568,7 @@ exerciseName: appState.currentExercise,
 bodyPart: appState.currentMuscle,
 variation: selectedVar,
 weight: weightVal,
-unit: document.getElementById('unitSelect').value,
+unit: document.getElementById('unitSelect') ? document.getElementById('unitSelect').value : 'kg',
 reps: document.getElementById('repsInput').value || '',
 time: timeVal,
 inclination: inclinationVal
@@ -1409,15 +1608,26 @@ container.innerHTML = '<div style="color:var(--modal-subtext); text-align:center
 container.innerHTML = dates.map(date => `
 <div style="background:var(--modal-card); border:1px solid var(--modal-border); padding:12px; border-radius:12px; margin-bottom:10px;">
 <div style="font-weight:800; color:var(--modal-accent); margin-bottom:6px; border-bottom:1px solid var(--modal-border); padding-bottom:4px; font-size:0.9rem;">🗓️ ${date}</div>
-${grouped[date].map(item => `
+${grouped[date].map(item => {
+const isTimed = item.exerciseName.toLowerCase().includes("plank") || item.exerciseName.toLowerCase().includes("hold");
+let detailsStr = '';
+if (isTimed) {
+detailsStr = `${item.time ? item.time + 's' : ''}${item.reps ? ' (' + item.reps + ' reps)' : ''}`;
+} else if (item.variation === 'Bodyweight') {
+detailsStr = `${item.reps} reps`;
+} else {
+detailsStr = `${item.weight}${item.unit} ×${item.reps}`;
+}
+return `
 <div class="history-row-item">
 <div class="history-name-col">${item.exerciseName} (${item.variation})</div>
 <div class="history-details-single">
-<strong>${item.variation === 'Bodyweight' ? '' : item.weight + item.unit + ' × '}${item.reps}${item.time ? ' (' + item.time + 's)' : ''}</strong>
+<strong>${detailsStr}</strong>
 <button class="edit-btn" onclick="openEditLogModal('${item.id}')">✏️</button>
 </div>
 </div>
-`).join('')}
+`;
+}).join('')}
 </div>
 `).join('');
 }
