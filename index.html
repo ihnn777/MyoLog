@@ -350,9 +350,11 @@ cursor: pointer;
 line-height: 1;
 }
 
+/* FULLY VERTICALLY SCROLLABLE MODAL BODY */
 .modal-body {
 padding: 20px;
-overflow-y: auto;
+overflow-y: auto !important;
+overflow-x: hidden;
 -webkit-overflow-scrolling: touch;
 overscroll-behavior: contain;
 display: flex;
@@ -417,13 +419,16 @@ display: flex;
 gap: 8px;
 }
 
-/* EXERCISE LOGGING & SCROLLABLE GRAPH VIEW */
+/* EXERCISE LOGGING & STRICT HORIZONTAL-ONLY GRAPH SCROLLING */
 .graph-scroll-container {
 width: 100%;
-overflow-x: auto;
+overflow-x: auto !important;
+overflow-y: hidden !important; /* Strict horizontal scroll only, no vertical scroll allowed */
 scrollbar-width: thin;
 scrollbar-color: var(--modal-border) transparent;
 -webkit-overflow-scrolling: touch;
+touch-action: pan-x; /* Locks touch gestures to horizontal panning */
+border-radius: 16px;
 }
 
 .graph-card {
@@ -433,6 +438,7 @@ border-radius: 16px;
 padding: 12px;
 height: 190px;
 min-width: 100%;
+box-sizing: border-box;
 }
 
 .variation-select-group {
