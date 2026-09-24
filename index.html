@@ -11,9 +11,9 @@
 :root {
 /* Cyber Dark Theme (Homepage, Graphs, Workout History) */
 --bg-dark: #101216;
---card-dark: #2a2f3e; /* Lighter background bubble for high contrast */
+--card-dark: #2a2f3e;
 --card-border-dark: #3a4154;
---muscle-plate-bg: #222634; /* Dark body part plates */
+--muscle-plate-bg: #222634;
 --muscle-plate-border: #33384a;
 --accent-neon: #00ff88;
 --accent-cyan: #00e5ff;
@@ -69,7 +69,6 @@ padding-bottom: 20px;
 overflow-x: hidden;
 }
 
-/* Prevent background scroll when modals are open */
 body.modal-open {
 overflow: hidden;
 position: fixed;
@@ -137,7 +136,6 @@ transform: scale(0.92);
 border-color: var(--accent-neon);
 }
 
-/* Non-intrusive Backup Banner */
 .backup-banner {
 background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 229, 255, 0.15));
 border: 1px solid var(--accent-neon);
@@ -167,9 +165,9 @@ gap: 8px;
 }
 
 .section-title {
-font-size: 0.75rem;
+font-size: 0.72rem;
 text-transform: uppercase;
-letter-spacing: 1px;
+letter-spacing: 0.8px;
 color: var(--text-muted);
 font-weight: 800;
 }
@@ -238,7 +236,6 @@ letter-spacing: 1px;
 color: var(--text-muted);
 }
 
-/* SVG Silhouette Styling */
 .svg-container {
 width: 100%;
 max-width: 320px;
@@ -284,7 +281,7 @@ letter-spacing: 0.5px;
 fill: #000000;
 }
 
-/* --- FULLY SCROLLABLE POP-UP OVERLAY MODAL --- */
+/* --- MODAL WINDOW OVERLAY --- */
 .modal-overlay {
 position: fixed;
 top: 0;
@@ -295,13 +292,10 @@ background: rgba(0, 0, 0, 0.75);
 backdrop-filter: blur(8px);
 display: none;
 justify-content: center;
-align-items: flex-start; /* Allows scrolling from top to bottom */
-padding: 24px 16px;
+align-items: center;
+padding: 12px;
 z-index: 1000;
 opacity: 0;
-overflow-y: auto !important; /* Entire overlay handles vertical scrolling smoothly */
--webkit-overflow-scrolling: touch;
-overscroll-behavior: contain;
 transition: opacity 0.25s ease;
 }
 
@@ -312,9 +306,10 @@ opacity: 1;
 
 .modal-window {
 background: var(--modal-bg);
-border-radius: 24px;
+border-radius: 20px;
 width: 100%;
-max-width: 460px;
+max-width: 440px;
+max-height: 96vh;
 display: flex;
 flex-direction: column;
 overflow: hidden;
@@ -322,7 +317,6 @@ border: 2px solid var(--modal-border);
 box-shadow: 0 16px 48px rgba(0,0,0,0.7);
 transform: scale(0.95) translateY(10px);
 transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
-margin: auto; /* Centers when short, scrolls naturally when tall */
 }
 
 .modal-overlay.active .modal-window {
@@ -330,16 +324,13 @@ transform: scale(1) translateY(0);
 }
 
 .modal-header {
-padding: 16px 20px;
+padding: 12px 16px;
 border-bottom: 1px solid var(--modal-border);
 display: flex;
 justify-content: space-between;
 align-items: center;
 background: var(--modal-card);
 flex-shrink: 0;
-position: sticky;
-top: 0;
-z-index: 10;
 }
 
 .modal-title-group {
@@ -349,7 +340,7 @@ gap: 10px;
 }
 
 .modal-title {
-font-size: 1.1rem;
+font-size: 1rem;
 font-weight: 700;
 color: var(--modal-accent);
 }
@@ -358,20 +349,20 @@ color: var(--modal-accent);
 background: transparent;
 border: none;
 color: var(--modal-subtext);
-font-size: 1.5rem;
+font-size: 1.4rem;
 cursor: pointer;
 line-height: 1;
 }
 
-/* MODAL BODY (CONTENTS FLOW NATURALLY) */
+/* HIGH-DENSITY COMPACT MODAL BODY FOR ZERO SCROLLING */
 .modal-body {
-padding: 20px;
-padding-bottom: 40px;
+padding: 12px;
 display: flex;
 flex-direction: column;
-gap: 18px;
+gap: 10px;
 flex: 1;
-overflow-y: visible; /* Flows inside the scrollable overlay window */
+overflow: hidden;
+box-sizing: border-box;
 }
 
 .search-input {
@@ -379,9 +370,9 @@ width: 100%;
 background: var(--modal-card);
 border: 1px solid var(--modal-border);
 border-radius: 12px;
-padding: 12px 16px;
+padding: 10px 14px;
 color: var(--modal-accent);
-font-size: 0.95rem;
+font-size: 0.9rem;
 outline: none;
 }
 
@@ -392,14 +383,16 @@ border-color: var(--modal-subtext);
 .exercise-list {
 display: flex;
 flex-direction: column;
-gap: 8px;
+gap: 6px;
+overflow-y: auto;
+max-height: 55vh;
 }
 
 .exercise-item {
 background: var(--modal-card);
 border: 1px solid var(--modal-border);
-padding: 14px 16px;
-border-radius: 14px;
+padding: 12px 14px;
+border-radius: 12px;
 display: flex;
 justify-content: space-between;
 align-items: center;
@@ -407,22 +400,21 @@ cursor: pointer;
 color: var(--modal-accent);
 font-weight: 600;
 transition: background 0.2s ease;
+font-size: 0.9rem;
 }
 
 .exercise-item:active {
 background: var(--modal-border);
 }
 
-/* Custom Exercise Box */
 .custom-ex-card {
 background: var(--modal-card);
 border: 1px dashed var(--modal-border);
-border-radius: 16px;
-padding: 14px;
+border-radius: 14px;
+padding: 10px 12px;
 display: flex;
 flex-direction: column;
-gap: 10px;
-margin-top: 8px;
+gap: 8px;
 }
 
 .custom-input-row {
@@ -430,79 +422,39 @@ display: flex;
 gap: 8px;
 }
 
-/* EXERCISE LOGGING & GRAPH CONTAINER */
-.graph-scroll-container {
-width: 100%;
-overflow-x: auto !important;
-overflow-y: hidden !important;
-scrollbar-width: thin;
-scrollbar-color: var(--modal-border) transparent;
--webkit-overflow-scrolling: touch;
-touch-action: pan-x;
-border-radius: 16px;
-margin-bottom: 12px;
-}
-
-.graph-card {
-background: var(--modal-card);
-border: 1px solid var(--modal-border);
-border-radius: 16px;
-padding: 16px;
-height: 220px;
-min-width: 100%;
-box-sizing: border-box;
-position: relative;
-}
-
-.variation-select-group {
-display: flex;
-gap: 8px;
-}
-
-.select-style {
-flex: 1;
-background: var(--modal-card);
-border: 1px solid var(--modal-border);
-color: var(--modal-accent);
-padding: 10px 12px;
-border-radius: 12px;
-font-size: 0.9rem;
-outline: none;
-}
-
-/* Logging Controls */
+/* COMPACT LOGGING CONTROLS & FORM */
 .logging-form {
 background: var(--modal-card);
 border: 1px solid var(--modal-border);
-border-radius: 18px;
-padding: 16px;
+border-radius: 14px;
+padding: 10px 12px;
 display: flex;
 flex-direction: column;
-gap: 14px;
+gap: 8px;
 }
 
 .input-row {
 display: flex;
-gap: 12px;
+gap: 8px;
 }
 
 .input-group {
 flex: 1;
 display: flex;
 flex-direction: column;
-gap: 6px;
+gap: 4px;
 }
 
 .input-label {
-font-size: 0.75rem;
+font-size: 0.68rem;
 text-transform: uppercase;
-font-weight: 700;
+font-weight: 800;
 color: var(--modal-subtext);
 }
 
 .field-with-unit {
 display: flex;
-gap: 6px;
+gap: 4px;
 }
 
 .num-input {
@@ -510,9 +462,9 @@ width: 100%;
 background: var(--modal-bg);
 border: 1px solid var(--modal-border);
 color: var(--modal-accent);
-padding: 12px;
-border-radius: 10px;
-font-size: 1.1rem;
+padding: 8px 10px;
+border-radius: 8px;
+font-size: 0.95rem;
 font-weight: 700;
 outline: none;
 box-sizing: border-box;
@@ -522,22 +474,23 @@ input[type="date"].num-input {
 max-width: 100%;
 appearance: none;
 -webkit-appearance: none;
-padding: 10px 12px;
+padding: 6px 8px;
+font-size: 0.85rem;
 }
 
 .unit-select {
 background: var(--modal-bg);
 border: 1px solid var(--modal-border);
 color: var(--modal-accent);
-padding: 0 8px;
-border-radius: 10px;
+padding: 0 6px;
+border-radius: 8px;
 font-weight: 600;
+font-size: 0.85rem;
 }
 
-/* Quick Increment Chips */
 .increment-chips {
 display: flex;
-gap: 6px;
+gap: 4px;
 justify-content: space-between;
 }
 
@@ -546,9 +499,9 @@ flex: 1;
 background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 229, 255, 0.15));
 border: 1px solid var(--accent-neon);
 color: var(--accent-neon);
-padding: 10px 0;
-border-radius: 10px;
-font-size: 0.85rem;
+padding: 6px 0;
+border-radius: 8px;
+font-size: 0.78rem;
 font-weight: 800;
 cursor: pointer;
 transition: all 0.15s ease;
@@ -564,9 +517,9 @@ transform: scale(0.96);
 background: var(--modal-accent);
 color: var(--modal-bg);
 border: none;
-padding: 14px;
-border-radius: 12px;
-font-size: 1rem;
+padding: 10px;
+border-radius: 10px;
+font-size: 0.95rem;
 font-weight: 800;
 cursor: pointer;
 width: 100%;
@@ -581,13 +534,12 @@ opacity: 0.8;
 background: rgba(255, 77, 77, 0.15);
 border: 1px solid #ff4d4d;
 color: #ff4d4d;
-padding: 12px;
-border-radius: 12px;
-font-size: 0.95rem;
+padding: 10px;
+border-radius: 10px;
+font-size: 0.88rem;
 font-weight: 700;
 cursor: pointer;
 width: 100%;
-transition: all 0.2s ease;
 margin-top: 4px;
 }
 
@@ -596,16 +548,15 @@ background: #ff4d4d;
 color: #ffffff;
 }
 
-/* Single Last Entry Card */
 .single-history-card {
 background: var(--modal-card);
 border: 1px solid var(--modal-border);
-border-radius: 16px;
-padding: 12px 16px;
+border-radius: 12px;
+padding: 8px 12px;
 display: flex;
 justify-content: space-between;
 align-items: center;
-font-size: 0.85rem;
+font-size: 0.82rem;
 }
 
 .del-btn {
@@ -621,19 +572,58 @@ color: var(--modal-accent);
 background: transparent;
 border: none;
 cursor: pointer;
-font-size: 0.9rem;
-padding: 4px;
+font-size: 0.85rem;
+padding: 2px;
 flex-shrink: 0;
 }
 
-/* WORKOUT HISTORY ROW LAYOUT */
+/* OPTIMIZED SCROLLABLE HORIZONTAL GRAPH CARD */
+.graph-scroll-container {
+width: 100%;
+overflow-x: auto !important;
+overflow-y: hidden !important;
+scrollbar-width: thin;
+scrollbar-color: var(--modal-border) transparent;
+-webkit-overflow-scrolling: touch;
+touch-action: pan-x;
+border-radius: 12px;
+box-sizing: border-box;
+}
+
+.graph-card {
+background: var(--modal-card);
+border: 1px solid var(--modal-border);
+border-radius: 12px;
+padding: 8px 10px 10px 10px;
+height: 145px; /* Compact canvas perfectly fitting in view */
+min-width: 100%;
+box-sizing: border-box;
+position: relative;
+}
+
+.variation-select-group {
+display: flex;
+gap: 8px;
+}
+
+.select-style {
+flex: 1;
+background: var(--modal-card);
+border: 1px solid var(--modal-border);
+color: var(--modal-accent);
+padding: 8px 10px;
+border-radius: 10px;
+font-size: 0.85rem;
+outline: none;
+}
+
 .history-row-item {
 display: flex;
 justify-content: space-between;
 align-items: center;
-gap: 12px;
+gap: 10px;
 font-size: 0.82rem;
-padding: 8px 0;
+padding: 6px 0;
 border-bottom: 1px solid var(--modal-border);
 width: 100%;
 box-sizing: border-box;
@@ -646,19 +636,18 @@ border-bottom: none;
 .history-name-col {
 flex: 1;
 min-width: 0;
-line-height: 1.25;
+line-height: 1.2;
 display: -webkit-box;
 -webkit-line-clamp: 2;
 -webkit-box-orient: vertical;
 overflow: hidden;
 word-wrap: break-word;
-overflow-wrap: break-word;
 }
 
 .history-details-single {
 display: flex;
 align-items: center;
-gap: 8px;
+gap: 6px;
 white-space: nowrap;
 flex-shrink: 0;
 }
@@ -695,74 +684,60 @@ flex-shrink: 0;
 
 <div class="svg-container">
 <svg viewBox="0 0 240 380">
-<!-- Prominent Center Divider Axis -->
+<!-- Center Axis -->
 <line x1="120" y1="8" x2="120" y2="372" stroke="#00e5ff" stroke-dasharray="5 5" stroke-width="2.5" opacity="0.8"/>
 
-<!-- HEAD / HELMET (SPLIT) -->
+<!-- HEAD -->
 <rect x="100" y="14" width="18" height="32" rx="6" fill="#1c1f2b" stroke="#33384a"/>
 <rect x="122" y="14" width="18" height="32" rx="6" fill="#1c1f2b" stroke="#33384a"/>
 
-<!-- ================= LEFT HALF: FRONT VIEW ================= -->
-<!-- Shoulder (Front) -->
+<!-- LEFT HALF: FRONT VIEW -->
 <rect x="28" y="50" width="44" height="44" rx="10" class="muscle-plate" data-muscle="Shoulders"/>
 <text x="50" y="72" class="plate-label">Shoulder</text>
 
-<!-- Chest / Pec -->
 <rect x="74" y="50" width="44" height="48" rx="8" class="muscle-plate" data-muscle="Chest"/>
 <text x="96" y="74" class="plate-label">Pec</text>
 
-<!-- Bicep & Forearm -->
 <rect x="28" y="98" width="42" height="50" rx="8" class="muscle-plate" data-muscle="Arms"/>
 <text x="49" y="123" class="plate-label">Arm</text>
 
-<!-- Abs / Core -->
 <rect x="74" y="102" width="44" height="68" rx="8" class="muscle-plate" data-muscle="Core"/>
 <text x="96" y="136" class="plate-label">Abs</text>
 
-<!-- Quad & Adductors -->
 <rect x="76" y="174" width="42" height="92" rx="10" class="muscle-plate" data-muscle="Quads"/>
 <text x="97" y="214" class="plate-label">
   <tspan x="97" dy="0">Quad</tspan>
   <tspan x="97" dy="10">/Add</tspan>
 </text>
 
-<!-- Calf (Front) -->
 <rect x="84" y="272" width="34" height="84" rx="10" class="muscle-plate" data-muscle="Calves"/>
 <text x="101" y="314" class="plate-label">Calf</text>
 
-<!-- ================= RIGHT HALF: BACK VIEW ================= -->
-<!-- Upper Back / Traps -->
+<!-- RIGHT HALF: BACK VIEW -->
 <rect x="122" y="50" width="44" height="40" rx="8" class="muscle-plate" data-muscle="Upper Back"/>
 <text x="144" y="70" class="plate-label">Upper</text>
 
-<!-- Shoulder / Rear Delt -->
 <rect x="168" y="50" width="44" height="44" rx="10" class="muscle-plate" data-muscle="Shoulders"/>
 <text x="190" y="72" class="plate-label">Shoulder</text>
 
-<!-- Mid Back & Lats -->
 <rect x="122" y="92" width="44" height="40" rx="8" class="muscle-plate" data-muscle="Mid Back"/>
 <text x="144" y="112" class="plate-label">
   <tspan x="144" dy="-4">Mid</tspan>
   <tspan x="144" dy="10">/Lat</tspan>
 </text>
 
-<!-- Tricep & Forearm -->
 <rect x="170" y="98" width="42" height="50" rx="8" class="muscle-plate" data-muscle="Arms"/>
 <text x="191" y="123" class="plate-label">Tri</text>
 
-<!-- Lower Back (Erectors) -->
 <rect x="122" y="134" width="44" height="38" rx="8" class="muscle-plate" data-muscle="Lower Back"/>
 <text x="144" y="153" class="plate-label">Lower</text>
 
-<!-- Glute -->
 <rect x="122" y="174" width="42" height="42" rx="10" class="muscle-plate" data-muscle="Glutes"/>
 <text x="143" y="195" class="plate-label">Glute</text>
 
-<!-- Hamstrings -->
 <rect x="122" y="220" width="42" height="46" rx="8" class="muscle-plate" data-muscle="Hamstrings"/>
 <text x="143" y="243" class="plate-label">Ham</text>
 
-<!-- Calf (Back) -->
 <rect x="122" y="272" width="34" height="84" rx="10" class="muscle-plate" data-muscle="Calves"/>
 <text x="139" y="314" class="plate-label">Calf</text>
 </svg>
@@ -776,11 +751,11 @@ flex-shrink: 0;
 <div id="searchResultsList" class="exercise-list" style="display:none; margin-top:6px;"></div>
 </div>
 
-<!-- RECENT EXERCISES BAR (QUICK RESUME BELOW SEARCH) -->
+<!-- RECENT EXERCISES BAR -->
 <div class="recent-bar">
 <div class="section-title">Quick Resume</div>
 <div id="recentChips" class="recent-chips">
-<!-- Dynamically filled by JS -->
+<!-- Dynamically filled -->
 </div>
 </div>
 </div>
@@ -809,8 +784,8 @@ flex-shrink: 0;
 <div class="modal-title">📅 Workout History</div>
 <button class="close-btn" onclick="closeHistoryModal()">×</button>
 </div>
-<div id="historyModalBody" class="modal-body">
-<!-- History session cards injected here -->
+<div id="historyModalBody" class="modal-body" style="overflow-y:auto;">
+<!-- History session cards -->
 </div>
 </div>
 </div>
@@ -822,8 +797,8 @@ flex-shrink: 0;
 <div class="modal-title">✏️ Edit Log Entry</div>
 <button class="close-btn" onclick="closeEditModal()">×</button>
 </div>
-<div id="editModalBody" class="modal-body">
-<!-- Injected edit form -->
+<div id="editModalBody" class="modal-body" style="overflow-y:auto;">
+<!-- Edit form -->
 </div>
 </div>
 </div>
@@ -909,7 +884,6 @@ openMuscleModal(muscle);
 });
 }
 
-/* Get all exercises (Default + Custom) */
 function getAllExercises(muscle) {
 if (!muscle) {
 let all = [];
@@ -991,7 +965,7 @@ appState.chartInstance = null;
 }
 }
 
-/* --- STEP 1: MUSCLE EXERCISE LIST VIEW + CUSTOM EXERCISE OPTION --- */
+/* --- STEP 1: MUSCLE EXERCISE LIST VIEW --- */
 function openMuscleModal(muscle) {
 appState.currentMuscle = muscle;
 document.getElementById('modalTitle').textContent = muscle;
@@ -1011,12 +985,11 @@ ${exercises.sort().map(ex => `
 `).join('')}
 </div>
 
-<!-- Custom Manual Free-Text Exercise Box -->
 <div class="custom-ex-card">
 <div class="section-title">Can't find your exercise?</div>
 <div class="custom-input-row">
 <input type="text" id="customExInput" class="search-input" placeholder="+ Add custom exercise name...">
-<button class="save-btn" style="width:auto; padding:0 18px; white-space:nowrap;" onclick="addAndLogCustomExercise()">Add</button>
+<button class="save-btn" style="width:auto; padding:0 14px; white-space:nowrap;" onclick="addAndLogCustomExercise()">Add</button>
 </div>
 </div>
 `;
@@ -1059,7 +1032,6 @@ function showMuscleExerciseList() {
 openMuscleModal(appState.currentMuscle);
 }
 
-/* Helper to get context-appropriate default variation */
 function getContextualDefaultVariation(exerciseName) {
 const name = exerciseName.toLowerCase();
 if (name.includes("push up") || name.includes("plank") || name.includes("dip") || name.includes("lunge") || name.includes("pull up")) {
@@ -1080,7 +1052,7 @@ return "Barbell";
 return "Machine";
 }
 
-/* --- STEP 2: EXERCISE LOGGING VIEW --- */
+/* --- STEP 2: EXERCISE LOGGING VIEW (REDESIGNED FOR FIT-TO-SCREEN) --- */
 function openExerciseLogging(exerciseName) {
 appState.currentExercise = exerciseName;
 document.getElementById('modalTitle').textContent = exerciseName;
@@ -1113,13 +1085,26 @@ const body = document.getElementById('modalBody');
 body.innerHTML = `
 <div id="lastEntryCard"></div>
 
-<div class="variation-select-group">
+<div class="graph-scroll-container" id="graphScrollContainer">
+<div class="graph-card" id="graphCard">
+<canvas id="progressionChart"></canvas>
+</div>
+</div>
+
+<div class="logging-form">
+<div class="input-row">
+<div class="input-group">
+<label class="input-label">Variation</label>
 <select id="varSelect" class="select-style" onchange="handleVariationOrExerciseChange()">
 ${VARIATIONS.map(v => `<option value="${v}" ${defaultVariation === v ? 'selected' : ''}>${v}</option>`).join('')}
 </select>
 </div>
+<div class="input-group">
+<label class="input-label">Date</label>
+<input type="date" id="dateInput" class="num-input" value="${new Date().toISOString().split('T')[0]}">
+</div>
+</div>
 
-<div class="logging-form">
 <div class="input-row">
 <div id="weightGroup" class="input-group">
 <label class="input-label">Weight</label>
@@ -1149,23 +1134,11 @@ ${increments.map(inc => `<button class="chip-btn" onclick="adjustWeight(${inc})"
 ${isPushUp ? `
 <div id="inclinationGroup" class="input-group">
 <label class="input-label">Inclination</label>
-<input type="text" id="inclinationInput" class="num-input" placeholder="e.g. Incline / Decline / Flat" value="${lastLog && lastLog.inclination ? lastLog.inclination : ''}">
+<input type="text" id="inclinationInput" class="num-input" placeholder="e.g. Incline / Flat" value="${lastLog && lastLog.inclination ? lastLog.inclination : ''}">
 </div>
 ` : ''}
 
-<div class="input-group">
-<label class="input-label">Date</label>
-<input type="date" id="dateInput" class="num-input" value="${new Date().toISOString().split('T')[0]}">
-</div>
-
 <button class="save-btn" onclick="saveLogEntry()">Save Entry</button>
-</div>
-
-<div class="section-title">Progression Trend</div>
-<div class="graph-scroll-container" id="graphScrollContainer">
-<div class="graph-card" id="graphCard">
-<canvas id="progressionChart"></canvas>
-</div>
 </div>
 `;
 
@@ -1215,10 +1188,14 @@ val = Math.max(0, val + amount);
 input.value = val;
 }
 
-/* --- CHART.JS SCROLLABLE GRAPH RENDER --- */
+/* --- CHART.JS SCROLLABLE GRAPH RENDER (CHRONOLOGICAL SORT ENFORCED) --- */
 function renderGraph() {
 const selectedVar = document.getElementById('varSelect').value;
-const filteredLogs = appState.logs.filter(l => l.exerciseName === appState.currentExercise && l.variation === selectedVar);
+
+// EXPLICITLY SORT LOGS CHRONOLOGICALLY (OLDEST TO NEWEST) LEFT TO RIGHT
+const filteredLogs = appState.logs
+.filter(l => l.exerciseName === appState.currentExercise && l.variation === selectedVar)
+.sort((a, b) => new Date(a.date) - new Date(b.date));
 
 const canvas = document.getElementById('progressionChart');
 const graphCard = document.getElementById('graphCard');
@@ -1227,8 +1204,8 @@ if (!canvas || !graphCard) return;
 
 const entryCount = filteredLogs.length;
 
-if (entryCount > 12) {
-const dynamicWidth = entryCount * 32;
+if (entryCount > 10) {
+const dynamicWidth = entryCount * 30;
 graphCard.style.width = `${dynamicWidth}px`;
 } else {
 graphCard.style.width = '100%';
@@ -1263,8 +1240,8 @@ backgroundColor: 'rgba(0, 255, 136, 0.1)',
 fill: true,
 tension: 0.3,
 pointStyle: 'circle',
-pointRadius: 6,
-pointHoverRadius: 8,
+pointRadius: 5,
+pointHoverRadius: 7,
 pointBackgroundColor: '#00ff88',
 pointBorderColor: '#00ff88'
 }]
@@ -1274,7 +1251,10 @@ responsive: true,
 maintainAspectRatio: false,
 layout: {
 padding: {
-bottom: 12
+top: 6,
+bottom: 2,
+left: 2,
+right: 6
 }
 },
 plugins: {
@@ -1303,13 +1283,13 @@ return context[0].label;
 }
 },
 scales: {
-x: { ticks: { color: '#8a8f9e', font: { size: 10 } }, grid: { display: false } },
-y: { ticks: { color: '#8a8f9e', font: { size: 10 } }, grid: { color: '#2e3342' } }
+x: { ticks: { color: '#8a8f9e', font: { size: 9 } }, grid: { display: false } },
+y: { ticks: { color: '#8a8f9e', font: { size: 9 } }, grid: { color: '#2e3342' } }
 }
 }
 });
 
-if (scrollContainer && entryCount > 12) {
+if (scrollContainer && entryCount > 10) {
 setTimeout(() => {
 scrollContainer.scrollLeft = scrollContainer.scrollWidth;
 }, 50);
@@ -1321,7 +1301,9 @@ function renderLastEntryCard() {
 const container = document.getElementById('lastEntryCard');
 if (!container) return;
 
-const filtered = appState.logs.filter(l => l.exerciseName === appState.currentExercise);
+const filtered = appState.logs
+.filter(l => l.exerciseName === appState.currentExercise)
+.sort((a, b) => new Date(a.date) - new Date(b.date));
 
 if (filtered.length === 0) {
 container.innerHTML = '<div class="single-history-card" style="color:var(--modal-subtext);">No past entries logged yet.</div>';
@@ -1379,7 +1361,7 @@ renderLastEntryCard();
 renderRecentChips();
 }
 
-/* --- WORKOUT HISTORY MODAL & EDITING --- */
+/* --- WORKOUT HISTORY MODAL --- */
 function openWorkoutHistory() {
 const container = document.getElementById('historyModalBody');
 const grouped = {};
@@ -1394,8 +1376,8 @@ if (dates.length === 0) {
 container.innerHTML = '<div style="color:var(--modal-subtext); text-align:center;">No completed workouts logged yet.</div>';
 } else {
 container.innerHTML = dates.map(date => `
-<div style="background:var(--modal-card); border:1px solid var(--modal-border); padding:14px; border-radius:14px; margin-bottom:12px;">
-<div style="font-weight:800; color:var(--modal-accent); margin-bottom:8px; border-bottom:1px solid var(--modal-border); padding-bottom:4px;">🗓️ ${date}</div>
+<div style="background:var(--modal-card); border:1px solid var(--modal-border); padding:12px; border-radius:12px; margin-bottom:10px;">
+<div style="font-weight:800; color:var(--modal-accent); margin-bottom:6px; border-bottom:1px solid var(--modal-border); padding-bottom:4px; font-size:0.9rem;">🗓️ ${date}</div>
 ${grouped[date].map(item => `
 <div class="history-row-item">
 <div class="history-name-col">${item.exerciseName} (${item.variation})</div>
@@ -1425,7 +1407,7 @@ const isTimed = log.exerciseName.toLowerCase().includes("plank") || log.exercise
 
 const body = document.getElementById('editModalBody');
 body.innerHTML = `
-<div style="font-weight:700; font-size:1rem; margin-bottom:10px; color:var(--modal-accent);">${log.exerciseName}</div>
+<div style="font-weight:700; font-size:0.95rem; margin-bottom:8px; color:var(--modal-accent);">${log.exerciseName}</div>
 
 <div class="input-group">
 <label class="input-label">Variation</label>
@@ -1434,7 +1416,7 @@ ${VARIATIONS.map(v => `<option value="${v}" ${log.variation === v ? 'selected' :
 </select>
 </div>
 
-<div class="input-row" style="margin-top:10px;">
+<div class="input-row" style="margin-top:8px;">
 <div class="input-group">
 <label class="input-label">Weight</label>
 <div class="field-with-unit">
@@ -1452,18 +1434,18 @@ ${VARIATIONS.map(v => `<option value="${v}" ${log.variation === v ? 'selected' :
 </div>
 
 ${isTimed ? `
-<div class="input-group" style="margin-top:10px;">
+<div class="input-group" style="margin-top:8px;">
 <label class="input-label">Duration (Seconds)</label>
 <input type="number" id="editTimeInput" class="num-input" value="${log.time || ''}">
 </div>
 ` : ''}
 
-<div class="input-group" style="margin-top:10px;">
+<div class="input-group" style="margin-top:8px;">
 <label class="input-label">Date</label>
 <input type="date" id="editDateInput" class="num-input" value="${log.date}">
 </div>
 
-<button class="save-btn" style="margin-top:14px;" onclick="saveEditedLogEntry()">Save Changes</button>
+<button class="save-btn" style="margin-top:12px;" onclick="saveEditedLogEntry()">Save Changes</button>
 <button class="delete-entry-btn" onclick="deleteEditedLogEntry()">🗑️ Delete Entry</button>
 `;
 
