@@ -11,14 +11,14 @@
 :root {
 /* Cyber Dark Theme (Homepage, Graphs, Workout History) */
 --bg-dark: #101216;
---card-dark: #181b22;
---card-border-dark: #262a36;
---muscle-plate-bg: #343a4a; /* Lighter Grey for Body Part Plates */
---muscle-plate-border: #485066;
+--card-dark: #20242f; /* Lightened big card/bubble background behind body map */
+--card-border-dark: #2d3342;
+--muscle-plate-bg: #222634; /* Reverted back to original dark plate color */
+--muscle-plate-border: #33384a;
 --accent-neon: #00ff88;
 --accent-cyan: #00e5ff;
 --text-main: #f0f2f5;
---text-muted: #9a9fae;
+--text-muted: #8a8f9e;
 --radius: 16px;
 --font-stack: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
 
@@ -35,8 +35,8 @@
 --bg-dark: #f4f6f9;
 --card-dark: #ffffff;
 --card-border-dark: #e1e4ea;
---muscle-plate-bg: #e2e8f0; /* Crisp Light Grey */
---muscle-plate-border: #cbd5e1;
+--muscle-plate-bg: #222634;
+--muscle-plate-border: #33384a;
 --accent-neon: #00a859;
 --accent-cyan: #0088cc;
 --text-main: #111827;
@@ -77,6 +77,8 @@ padding: 16px;
 display: flex;
 flex-direction: column;
 gap: 16px;
+min-height: 90vh; /* Pushes content down on homepage */
+justify-content: flex-end; /* Shifts body map, search, and quick resume toward bottom */
 }
 
 /* --- HEADER & TOP BAR --- */
@@ -85,6 +87,7 @@ display: flex;
 flex-direction: column;
 gap: 10px;
 padding-bottom: 4px;
+margin-bottom: auto; /* Keeps header pinned at top while pushing rest down */
 }
 
 .header-top-row {
@@ -204,7 +207,7 @@ outline: none;
 border-color: var(--accent-neon);
 }
 
-/* --- BODY MAP CARD --- */
+/* --- BODY MAP CARD (LIGHTENED BUBBLE BACKGROUND) --- */
 .body-map-card {
 background: var(--card-dark);
 border: 1px solid var(--card-border-dark);
@@ -242,7 +245,7 @@ height: 100%;
 filter: drop-shadow(0px 4px 16px rgba(0,0,0,0.4));
 }
 
-/* Robotic Plate Styling with Lighter Grey */
+/* Reverted Original Body Part Colors */
 .muscle-plate {
 fill: var(--muscle-plate-bg);
 stroke: var(--muscle-plate-border);
@@ -262,7 +265,7 @@ filter: drop-shadow(0px 0px 10px var(--accent-neon));
 .plate-label {
 font-size: 8px;
 font-weight: 800;
-fill: var(--text-main);
+fill: var(--text-muted);
 pointer-events: none;
 text-anchor: middle;
 dominant-baseline: central;
@@ -644,8 +647,8 @@ white-space: nowrap;
 <line x1="120" y1="10" x2="120" y2="370" stroke="#262a36" stroke-dasharray="4 4" stroke-width="2"/>
 
 <!-- HEAD / HELMET (SPLIT) -->
-<rect x="100" y="14" width="18" height="32" rx="6" fill="#202430" stroke="#3a4054"/>
-<rect x="122" y="14" width="18" height="32" rx="6" fill="#202430" stroke="#3a4054"/>
+<rect x="100" y="14" width="18" height="32" rx="6" fill="#1c1f2b" stroke="#33384a"/>
+<rect x="122" y="14" width="18" height="32" rx="6" fill="#1c1f2b" stroke="#33384a"/>
 
 <!-- ================= LEFT HALF: FRONT VIEW ================= -->
 <!-- Shoulder (Front) -->
