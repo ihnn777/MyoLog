@@ -172,6 +172,16 @@ color: var(--text-muted);
 font-weight: 800;
 }
 
+.modal-section-title {
+font-size: 0.72rem;
+text-transform: uppercase;
+letter-spacing: 0.8px;
+color: var(--modal-subtext);
+font-weight: 800;
+margin-top: 2px;
+margin-bottom: -2px;
+}
+
 .recent-chips {
 display: flex;
 gap: 8px;
@@ -463,7 +473,6 @@ display: flex;
 gap: 4px;
 }
 
-/* ENLARGED INPUT FIELD FOCUS */
 .num-input {
 width: 100%;
 background: var(--modal-bg);
@@ -614,7 +623,7 @@ background: var(--modal-card);
 border: 1px solid var(--modal-border);
 border-radius: 12px;
 padding: 6px 8px 8px 8px;
-height: 130px;
+height: 125px;
 min-width: 100%;
 box-sizing: border-box;
 position: relative;
@@ -1071,7 +1080,7 @@ return "Barbell";
 return "Machine";
 }
 
-/* --- STEP 2: EXERCISE LOGGING VIEW (PROMINENT INPUTS ON TOP) --- */
+/* --- STEP 2: EXERCISE LOGGING VIEW --- */
 function openExerciseLogging(exerciseName) {
 appState.currentExercise = exerciseName;
 document.getElementById('modalTitle').textContent = exerciseName;
@@ -1156,6 +1165,8 @@ ${VARIATIONS.map(v => `<option value="${v}" ${defaultVariation === v ? 'selected
 <button class="save-btn" onclick="saveLogEntry()">Save Entry</button>
 </div>
 
+<!-- SECTION HEADER TITLE ABOVE GRAPH -->
+<div class="modal-section-title">Progression History</div>
 <div class="graph-scroll-container" id="graphScrollContainer">
 <div class="graph-card" id="graphCard">
 <canvas id="progressionChart"></canvas>
