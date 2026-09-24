@@ -356,10 +356,10 @@ line-height: 1;
 
 /* HIGH-DENSITY COMPACT MODAL BODY FOR ZERO SCROLLING */
 .modal-body {
-padding: 12px;
+padding: 10px 12px;
 display: flex;
 flex-direction: column;
-gap: 10px;
+gap: 8px;
 flex: 1;
 overflow: hidden;
 box-sizing: border-box;
@@ -442,14 +442,20 @@ gap: 8px;
 flex: 1;
 display: flex;
 flex-direction: column;
-gap: 4px;
+gap: 3px;
 }
 
 .input-label {
-font-size: 0.68rem;
+font-size: 0.7rem;
 text-transform: uppercase;
 font-weight: 800;
 color: var(--modal-subtext);
+letter-spacing: 0.5px;
+}
+
+.input-label-primary {
+font-size: 0.78rem;
+color: var(--accent-neon);
 }
 
 .field-with-unit {
@@ -457,35 +463,48 @@ display: flex;
 gap: 4px;
 }
 
+/* ENLARGED INPUT FIELD FOCUS */
 .num-input {
 width: 100%;
 background: var(--modal-bg);
-border: 1px solid var(--modal-border);
+border: 1.5px solid var(--modal-border);
 color: var(--modal-accent);
 padding: 8px 10px;
 border-radius: 8px;
-font-size: 0.95rem;
+font-size: 1rem;
 font-weight: 700;
 outline: none;
 box-sizing: border-box;
+}
+
+.num-input-lg {
+font-size: 1.4rem !important;
+padding: 10px 12px !important;
+border-color: rgba(0, 255, 136, 0.4);
+background: rgba(0, 0, 0, 0.2);
+}
+
+.num-input-lg:focus {
+border-color: var(--accent-neon);
+box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
 }
 
 input[type="date"].num-input {
 max-width: 100%;
 appearance: none;
 -webkit-appearance: none;
-padding: 6px 8px;
+padding: 8px;
 font-size: 0.85rem;
 }
 
 .unit-select {
 background: var(--modal-bg);
-border: 1px solid var(--modal-border);
+border: 1.5px solid var(--modal-border);
 color: var(--modal-accent);
-padding: 0 6px;
+padding: 0 8px;
 border-radius: 8px;
-font-weight: 600;
-font-size: 0.85rem;
+font-weight: 700;
+font-size: 0.95rem;
 }
 
 .increment-chips {
@@ -594,8 +613,8 @@ box-sizing: border-box;
 background: var(--modal-card);
 border: 1px solid var(--modal-border);
 border-radius: 12px;
-padding: 8px 10px 10px 10px;
-height: 145px; /* Compact canvas perfectly fitting in view */
+padding: 6px 8px 8px 8px;
+height: 130px;
 min-width: 100%;
 box-sizing: border-box;
 position: relative;
@@ -611,9 +630,9 @@ flex: 1;
 background: var(--modal-card);
 border: 1px solid var(--modal-border);
 color: var(--modal-accent);
-padding: 8px 10px;
-border-radius: 10px;
-font-size: 0.85rem;
+padding: 6px 10px;
+border-radius: 8px;
+font-size: 0.82rem;
 outline: none;
 }
 
@@ -1052,7 +1071,7 @@ return "Barbell";
 return "Machine";
 }
 
-/* --- STEP 2: EXERCISE LOGGING VIEW (REDESIGNED FOR FIT-TO-SCREEN) --- */
+/* --- STEP 2: EXERCISE LOGGING VIEW (PROMINENT INPUTS ON TOP) --- */
 function openExerciseLogging(exerciseName) {
 appState.currentExercise = exerciseName;
 document.getElementById('modalTitle').textContent = exerciseName;
@@ -1085,14 +1104,43 @@ const body = document.getElementById('modalBody');
 body.innerHTML = `
 <div id="lastEntryCard"></div>
 
-<div class="graph-scroll-container" id="graphScrollContainer">
-<div class="graph-card" id="graphCard">
-<canvas id="progressionChart"></canvas>
+<!-- MAIN LOGGING FORM WITH PROMINENT NUMERICAL INPUTS AT TOP -->
+<div class="logging-form">
+<div class="input-row">
+<div id="weightGroup" class="input-group">
+<label class="input-label input-label-primary">Weight</label>
+<div class="field-with-unit">
+<input type="number" id="weightInput" class="num-input num-input-lg" value="${lastLog && lastLog.weight ? lastLog.weight : 20}" step="0.5">
+<select id="unitSelect" class="unit-select">
+<option value="kg" ${lastLog && lastLog.unit === 'kg' ? 'selected' : ''}>kg</option>
+<option value="lb" ${lastLog && lastLog.unit === 'lb' ? 'selected' : ''}>lb</option>
+</select>
 </div>
 </div>
 
-<div class="logging-form">
-<div class="input-row">
+<div class="input-group">
+<label class="input-label input-label-primary">Reps</label>
+<input type="text" id="repsInput" class="num-input num-input-lg" value="${defaultReps}">
+</div>
+</div>
+
+<div id="incrementChipsGroup" class="increment-chips">
+${increments.map(inc => `<button class="chip-btn" onclick="adjustWeight(${inc})">${inc > 0 ? '+' : ''}${inc}kg</button>`).join('')}
+</div>
+
+<div id="timeGroup" class="input-group" style="display:none;">
+<label class="input-label input-label-primary">Duration (Sec)</label>
+<input type="number" id="timeInput" class="num-input num-input-lg" placeholder="e.g. 60" value="${lastLog && lastLog.time ? lastLog.time : ''}">
+</div>
+
+${isPushUp ? `
+<div id="inclinationGroup" class="input-group">
+<label class="input-label">Inclination</label>
+<input type="text" id="inclinationInput" class="num-input" placeholder="e.g. Incline / Flat" value="${lastLog && lastLog.inclination ? lastLog.inclination : ''}">
+</div>
+` : ''}
+
+<div class="input-row" style="margin-top:2px;">
 <div class="input-group">
 <label class="input-label">Variation</label>
 <select id="varSelect" class="select-style" onchange="handleVariationOrExerciseChange()">
@@ -1105,40 +1153,13 @@ ${VARIATIONS.map(v => `<option value="${v}" ${defaultVariation === v ? 'selected
 </div>
 </div>
 
-<div class="input-row">
-<div id="weightGroup" class="input-group">
-<label class="input-label">Weight</label>
-<div class="field-with-unit">
-<input type="number" id="weightInput" class="num-input" value="${lastLog && lastLog.weight ? lastLog.weight : 20}" step="0.5">
-<select id="unitSelect" class="unit-select">
-<option value="kg" ${lastLog && lastLog.unit === 'kg' ? 'selected' : ''}>kg</option>
-<option value="lb" ${lastLog && lastLog.unit === 'lb' ? 'selected' : ''}>lb</option>
-</select>
-</div>
-</div>
-<div class="input-group">
-<label class="input-label">Reps</label>
-<input type="text" id="repsInput" class="num-input" value="${defaultReps}">
-</div>
-</div>
-
-<div id="incrementChipsGroup" class="increment-chips">
-${increments.map(inc => `<button class="chip-btn" onclick="adjustWeight(${inc})">${inc > 0 ? '+' : ''}${inc}kg</button>`).join('')}
-</div>
-
-<div id="timeGroup" class="input-group" style="display:none;">
-<label class="input-label">Duration (Seconds)</label>
-<input type="number" id="timeInput" class="num-input" placeholder="e.g. 60" value="${lastLog && lastLog.time ? lastLog.time : ''}">
-</div>
-
-${isPushUp ? `
-<div id="inclinationGroup" class="input-group">
-<label class="input-label">Inclination</label>
-<input type="text" id="inclinationInput" class="num-input" placeholder="e.g. Incline / Flat" value="${lastLog && lastLog.inclination ? lastLog.inclination : ''}">
-</div>
-` : ''}
-
 <button class="save-btn" onclick="saveLogEntry()">Save Entry</button>
+</div>
+
+<div class="graph-scroll-container" id="graphScrollContainer">
+<div class="graph-card" id="graphCard">
+<canvas id="progressionChart"></canvas>
+</div>
 </div>
 `;
 
@@ -1192,7 +1213,6 @@ input.value = val;
 function renderGraph() {
 const selectedVar = document.getElementById('varSelect').value;
 
-// EXPLICITLY SORT LOGS CHRONOLOGICALLY (OLDEST TO NEWEST) LEFT TO RIGHT
 const filteredLogs = appState.logs
 .filter(l => l.exerciseName === appState.currentExercise && l.variation === selectedVar)
 .sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -1240,8 +1260,8 @@ backgroundColor: 'rgba(0, 255, 136, 0.1)',
 fill: true,
 tension: 0.3,
 pointStyle: 'circle',
-pointRadius: 5,
-pointHoverRadius: 7,
+pointRadius: 4,
+pointHoverRadius: 6,
 pointBackgroundColor: '#00ff88',
 pointBorderColor: '#00ff88'
 }]
@@ -1251,10 +1271,10 @@ responsive: true,
 maintainAspectRatio: false,
 layout: {
 padding: {
-top: 6,
+top: 4,
 bottom: 2,
 left: 2,
-right: 6
+right: 4
 }
 },
 plugins: {
@@ -1283,8 +1303,8 @@ return context[0].label;
 }
 },
 scales: {
-x: { ticks: { color: '#8a8f9e', font: { size: 9 } }, grid: { display: false } },
-y: { ticks: { color: '#8a8f9e', font: { size: 9 } }, grid: { color: '#2e3342' } }
+x: { ticks: { color: '#8a8f9e', font: { size: 8 } }, grid: { display: false } },
+y: { ticks: { color: '#8a8f9e', font: { size: 8 } }, grid: { color: '#2e3342' } }
 }
 }
 });
