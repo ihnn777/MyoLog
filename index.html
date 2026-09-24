@@ -69,6 +69,13 @@ padding-bottom: 20px;
 overflow-x: hidden;
 }
 
+/* Prevent background scroll when modals are open */
+body.modal-open {
+overflow: hidden;
+position: fixed;
+width: 100%;
+}
+
 /* --- LAYOUT CONTAINERS --- */
 .app-container {
 width: 100%;
@@ -77,7 +84,7 @@ padding: 16px;
 display: flex;
 flex-direction: column;
 gap: 16px;
-min-height: 98vh; /* Maximum vertical space pushing controls to bottom for thumb reach */
+min-height: 98vh;
 justify-content: flex-end;
 }
 
@@ -87,7 +94,7 @@ display: flex;
 flex-direction: column;
 gap: 10px;
 padding-bottom: 4px;
-margin-bottom: auto; /* Pinned at top while pushing body elements downwards */
+margin-bottom: auto;
 }
 
 .header-top-row {
@@ -277,7 +284,7 @@ letter-spacing: 0.5px;
 fill: #000000;
 }
 
-/* --- FLOATING POP-UP MODAL WINDOW --- */
+/* --- FULLY SCROLLABLE POP-UP OVERLAY MODAL --- */
 .modal-overlay {
 position: fixed;
 top: 0;
@@ -288,10 +295,13 @@ background: rgba(0, 0, 0, 0.75);
 backdrop-filter: blur(8px);
 display: none;
 justify-content: center;
-align-items: center;
-padding: 16px;
+align-items: flex-start; /* Allows scrolling from top to bottom */
+padding: 24px 16px;
 z-index: 1000;
 opacity: 0;
+overflow-y: auto !important; /* Entire overlay handles vertical scrolling smoothly */
+-webkit-overflow-scrolling: touch;
+overscroll-behavior: contain;
 transition: opacity 0.25s ease;
 }
 
@@ -305,7 +315,6 @@ background: var(--modal-bg);
 border-radius: 24px;
 width: 100%;
 max-width: 460px;
-max-height: 85vh;
 display: flex;
 flex-direction: column;
 overflow: hidden;
@@ -313,6 +322,7 @@ border: 2px solid var(--modal-border);
 box-shadow: 0 16px 48px rgba(0,0,0,0.7);
 transform: scale(0.95) translateY(10px);
 transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+margin: auto; /* Centers when short, scrolls naturally when tall */
 }
 
 .modal-overlay.active .modal-window {
@@ -353,17 +363,15 @@ cursor: pointer;
 line-height: 1;
 }
 
-/* POPUP LOG PAGE VERTICALLY SCROLLABLE */
+/* MODAL BODY (CONTENTS FLOW NATURALLY) */
 .modal-body {
 padding: 20px;
-padding-bottom: 40px; /* Generous bottom spacing */
-overflow-y: auto !important;
--webkit-overflow-scrolling: touch;
-overscroll-behavior: contain;
+padding-bottom: 40px;
 display: flex;
 flex-direction: column;
 gap: 18px;
 flex: 1;
+overflow-y: visible; /* Flows inside the scrollable overlay window */
 }
 
 .search-input {
@@ -422,7 +430,7 @@ display: flex;
 gap: 8px;
 }
 
-/* EXERCISE LOGGING & GRAPH CONTAINER REDESIGN */
+/* EXERCISE LOGGING & GRAPH CONTAINER */
 .graph-scroll-container {
 width: 100%;
 overflow-x: auto !important;
@@ -440,7 +448,7 @@ background: var(--modal-card);
 border: 1px solid var(--modal-border);
 border-radius: 16px;
 padding: 16px;
-height: 220px; /* Expanded height to fit all x-axis labels comfortably */
+height: 220px;
 min-width: 100%;
 box-sizing: border-box;
 position: relative;
@@ -969,12 +977,14 @@ document.getElementById('backupBanner').style.display = unbackedLogs >= 10 ? 'fl
 }
 
 /* --- MODAL MANAGEMENT --- */
-function openModal() {
-document.getElementById('appModal').classList.add('active');
+function openModal(modalId = 'appModal') {
+document.getElementById(modalId).classList.add('active');
+document.body.classList.add('modal-open');
 }
 
 function closeModal() {
-document.getElementById('appModal').classList.remove('active');
+document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+document.body.classList.remove('modal-open');
 if (appState.chartInstance) {
 appState.chartInstance.destroy();
 appState.chartInstance = null;
@@ -1011,7 +1021,7 @@ ${exercises.sort().map(ex => `
 </div>
 `;
 
-openModal();
+openModal('appModal');
 }
 
 function filterExercises(query) {
@@ -1159,7 +1169,7 @@ ${isPushUp ? `
 </div>
 `;
 
-openModal();
+openModal('appModal');
 handleVariationOrExerciseChange();
 renderGraph();
 renderLastEntryCard();
@@ -1264,7 +1274,7 @@ responsive: true,
 maintainAspectRatio: false,
 layout: {
 padding: {
-bottom: 12 /* Built-in Chart.js padding to keep x-axis labels safely inside the canvas */
+bottom: 12
 }
 },
 plugins: {
@@ -1399,11 +1409,11 @@ ${grouped[date].map(item => `
 `).join('');
 }
 
-document.getElementById('historyModal').classList.add('active');
+openModal('historyModal');
 }
 
 function closeHistoryModal() {
-document.getElementById('historyModal').classList.remove('active');
+closeModal();
 }
 
 function openEditLogModal(id) {
@@ -1457,12 +1467,11 @@ ${isTimed ? `
 <button class="delete-entry-btn" onclick="deleteEditedLogEntry()">🗑️ Delete Entry</button>
 `;
 
-document.getElementById('editModal').classList.add('active');
+openModal('editModal');
 }
 
 function closeEditModal() {
-document.getElementById('editModal').classList.remove('active');
-appState.editingLogId = null;
+closeModal();
 }
 
 function saveEditedLogEntry() {
@@ -1481,14 +1490,14 @@ appState.logs[index].date = document.getElementById('editDateInput').value;
 localStorage.setItem('myolog_logs', JSON.stringify(appState.logs));
 }
 
-closeEditModal();
+closeModal();
 openWorkoutHistory();
 }
 
 function deleteEditedLogEntry() {
 if (!appState.editingLogId) return;
 deleteLog(appState.editingLogId);
-closeEditModal();
+closeModal();
 openWorkoutHistory();
 }
 
