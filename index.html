@@ -11,9 +11,9 @@
 :root {
 /* Cyber Dark Theme (Homepage, Graphs, Workout History) */
 --bg-dark: #101216;
---card-dark: #2a2f3e; /* Even lighter background bubble for high contrast */
+--card-dark: #2a2f3e; /* Lighter background bubble for high contrast */
 --card-border-dark: #3a4154;
---muscle-plate-bg: #222634; /* Reverted dark body part plates */
+--muscle-plate-bg: #222634; /* Dark body part plates */
 --muscle-plate-border: #33384a;
 --accent-neon: #00ff88;
 --accent-cyan: #00e5ff;
@@ -207,7 +207,7 @@ outline: none;
 border-color: var(--accent-neon);
 }
 
-/* --- BODY MAP CARD (EVEN LIGHTER BUBBLE BACKGROUND) --- */
+/* --- BODY MAP CARD --- */
 .body-map-card {
 background: var(--card-dark);
 border: 1px solid var(--card-border-dark);
@@ -559,6 +559,25 @@ transition: opacity 0.2s ease;
 opacity: 0.8;
 }
 
+.delete-entry-btn {
+background: rgba(255, 77, 77, 0.15);
+border: 1px solid #ff4d4d;
+color: #ff4d4d;
+padding: 12px;
+border-radius: 12px;
+font-size: 0.95rem;
+font-weight: 700;
+cursor: pointer;
+width: 100%;
+transition: all 0.2s ease;
+margin-top: 4px;
+}
+
+.delete-entry-btn:active {
+background: #ff4d4d;
+color: #ffffff;
+}
+
 /* Single Last Entry Card */
 .single-history-card {
 background: var(--modal-card);
@@ -589,7 +608,7 @@ padding: 4px;
 flex-shrink: 0;
 }
 
-/* WORKOUT HISTORY ROW LAYOUT (Allows 2-line exercise names while guaranteeing contained content) */
+/* WORKOUT HISTORY ROW LAYOUT */
 .history-row-item {
 display: flex;
 justify-content: space-between;
@@ -611,7 +630,7 @@ flex: 1;
 min-width: 0;
 line-height: 1.25;
 display: -webkit-box;
--webkit-line-clamp: 2; /* Allows names up to 2 lines */
+-webkit-line-clamp: 2;
 -webkit-box-orient: vertical;
 overflow: hidden;
 word-wrap: break-word;
@@ -658,8 +677,8 @@ flex-shrink: 0;
 
 <div class="svg-container">
 <svg viewBox="0 0 240 380">
-<!-- Center Divider Axis -->
-<line x1="120" y1="10" x2="120" y2="370" stroke="#262a36" stroke-dasharray="4 4" stroke-width="2"/>
+<!-- Prominent Center Divider Axis -->
+<line x1="120" y1="8" x2="120" y2="372" stroke="#00e5ff" stroke-dasharray="5 5" stroke-width="2.5" opacity="0.8"/>
 
 <!-- HEAD / HELMET (SPLIT) -->
 <rect x="100" y="14" width="18" height="32" rx="6" fill="#1c1f2b" stroke="#33384a"/>
@@ -1420,6 +1439,7 @@ ${isTimed ? `
 </div>
 
 <button class="save-btn" style="margin-top:14px;" onclick="saveEditedLogEntry()">Save Changes</button>
+<button class="delete-entry-btn" onclick="deleteEditedLogEntry()">🗑️ Delete Entry</button>
 `;
 
 document.getElementById('editModal').classList.add('active');
@@ -1446,6 +1466,13 @@ appState.logs[index].date = document.getElementById('editDateInput').value;
 localStorage.setItem('myolog_logs', JSON.stringify(appState.logs));
 }
 
+closeEditModal();
+openWorkoutHistory();
+}
+
+function deleteEditedLogEntry() {
+if (!appState.editingLogId) return;
+deleteLog(appState.editingLogId);
 closeEditModal();
 openWorkoutHistory();
 }
