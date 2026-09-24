@@ -11,7 +11,7 @@
 :root {
 /* Cyber Dark Theme (Homepage, Graphs, Workout History) */
 --bg-dark: #101216;
---card-dark: #2a2f3e; /* High contrast background bubble */
+--card-dark: #2a2f3e; /* Lighter background bubble for high contrast */
 --card-border-dark: #3a4154;
 --muscle-plate-bg: #222634; /* Dark body part plates */
 --muscle-plate-border: #33384a;
@@ -327,6 +327,9 @@ justify-content: space-between;
 align-items: center;
 background: var(--modal-card);
 flex-shrink: 0;
+position: sticky;
+top: 0;
+z-index: 10;
 }
 
 .modal-title-group {
@@ -350,10 +353,11 @@ cursor: pointer;
 line-height: 1;
 }
 
-/* FIXED SCROLLABLE MODAL BODY WITH SUFFICIENT BOTTOM PADDING */
+/* POPUP LOG PAGE VERTICALLY SCROLLABLE */
 .modal-body {
-padding: 20px 20px 32px 20px; /* Added extra bottom padding so the graph never gets cut off */
-overflow-y: auto;
+padding: 20px;
+padding-bottom: 40px; /* Generous bottom spacing */
+overflow-y: auto !important;
 -webkit-overflow-scrolling: touch;
 overscroll-behavior: contain;
 display: flex;
@@ -418,28 +422,28 @@ display: flex;
 gap: 8px;
 }
 
-/* EXERCISE LOGGING & STRICT HORIZONTAL-ONLY GRAPH SCROLLING */
+/* EXERCISE LOGGING & GRAPH CONTAINER REDESIGN */
 .graph-scroll-container {
 width: 100%;
-overflow-x: auto;
-overflow-y: hidden; /* Prevent vertical overflow inside graph wrapper */
+overflow-x: auto !important;
+overflow-y: hidden !important;
 scrollbar-width: thin;
 scrollbar-color: var(--modal-border) transparent;
 -webkit-overflow-scrolling: touch;
 touch-action: pan-x;
 border-radius: 16px;
-padding-bottom: 6px; /* Extra breathing space for x-axis ticks */
-margin-bottom: 8px;
+margin-bottom: 12px;
 }
 
 .graph-card {
 background: var(--modal-card);
 border: 1px solid var(--modal-border);
 border-radius: 16px;
-padding: 12px 12px 16px 12px; /* Ensure bottom axis has padding inside canvas card */
-height: 195px;
+padding: 16px;
+height: 220px; /* Expanded height to fit all x-axis labels comfortably */
 min-width: 100%;
 box-sizing: border-box;
+position: relative;
 }
 
 .variation-select-group {
@@ -1258,6 +1262,11 @@ pointBorderColor: '#00ff88'
 options: {
 responsive: true,
 maintainAspectRatio: false,
+layout: {
+padding: {
+bottom: 12 /* Built-in Chart.js padding to keep x-axis labels safely inside the canvas */
+}
+},
 plugins: {
 legend: { display: false },
 tooltip: {
