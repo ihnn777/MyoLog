@@ -11,9 +11,9 @@
 :root {
 /* Cyber Dark Theme (Homepage, Graphs, Workout History) */
 --bg-dark: #101216;
---card-dark: #20242f; /* Lightened big card/bubble background behind body map */
---card-border-dark: #2d3342;
---muscle-plate-bg: #222634; /* Reverted back to original dark plate color */
+--card-dark: #2a2f3e; /* Even lighter background bubble for high contrast */
+--card-border-dark: #3a4154;
+--muscle-plate-bg: #222634; /* Reverted dark body part plates */
 --muscle-plate-border: #33384a;
 --accent-neon: #00ff88;
 --accent-cyan: #00e5ff;
@@ -65,7 +65,7 @@ display: flex;
 flex-direction: column;
 align-items: center;
 min-height: 100vh;
-padding-bottom: 30px;
+padding-bottom: 20px;
 overflow-x: hidden;
 }
 
@@ -77,8 +77,8 @@ padding: 16px;
 display: flex;
 flex-direction: column;
 gap: 16px;
-min-height: 90vh; /* Pushes content down on homepage */
-justify-content: flex-end; /* Shifts body map, search, and quick resume toward bottom */
+min-height: 98vh; /* Maximum vertical space pushing controls to bottom for thumb reach */
+justify-content: flex-end;
 }
 
 /* --- HEADER & TOP BAR --- */
@@ -87,7 +87,7 @@ display: flex;
 flex-direction: column;
 gap: 10px;
 padding-bottom: 4px;
-margin-bottom: auto; /* Keeps header pinned at top while pushing rest down */
+margin-bottom: auto; /* Pinned at top while pushing body elements downwards */
 }
 
 .header-top-row {
@@ -207,7 +207,7 @@ outline: none;
 border-color: var(--accent-neon);
 }
 
-/* --- BODY MAP CARD (LIGHTENED BUBBLE BACKGROUND) --- */
+/* --- BODY MAP CARD (EVEN LIGHTER BUBBLE BACKGROUND) --- */
 .body-map-card {
 background: var(--card-dark);
 border: 1px solid var(--card-border-dark);
@@ -245,7 +245,6 @@ height: 100%;
 filter: drop-shadow(0px 4px 16px rgba(0,0,0,0.4));
 }
 
-/* Reverted Original Body Part Colors */
 .muscle-plate {
 fill: var(--muscle-plate-bg);
 stroke: var(--muscle-plate-border);
@@ -586,29 +585,45 @@ background: transparent;
 border: none;
 cursor: pointer;
 font-size: 0.9rem;
-margin-left: 10px;
+padding: 4px;
+flex-shrink: 0;
 }
 
-/* Workout History Single-Line Layout */
+/* WORKOUT HISTORY ROW LAYOUT (Allows 2-line exercise names while guaranteeing contained content) */
 .history-row-item {
 display: flex;
 justify-content: space-between;
 align-items: center;
+gap: 12px;
 font-size: 0.82rem;
-padding: 6px 0;
+padding: 8px 0;
 border-bottom: 1px solid var(--modal-border);
-white-space: nowrap;
+width: 100%;
+box-sizing: border-box;
 }
 
 .history-row-item:last-child {
 border-bottom: none;
 }
 
+.history-name-col {
+flex: 1;
+min-width: 0;
+line-height: 1.25;
+display: -webkit-box;
+-webkit-line-clamp: 2; /* Allows names up to 2 lines */
+-webkit-box-orient: vertical;
+overflow: hidden;
+word-wrap: break-word;
+overflow-wrap: break-word;
+}
+
 .history-details-single {
 display: flex;
 align-items: center;
-gap: 6px;
+gap: 8px;
 white-space: nowrap;
+flex-shrink: 0;
 }
 </style>
 </head>
@@ -1339,7 +1354,7 @@ container.innerHTML = dates.map(date => `
 <div style="font-weight:800; color:var(--modal-accent); margin-bottom:8px; border-bottom:1px solid var(--modal-border); padding-bottom:4px;">🗓️ ${date}</div>
 ${grouped[date].map(item => `
 <div class="history-row-item">
-<span>${item.exerciseName} (${item.variation})</span>
+<div class="history-name-col">${item.exerciseName} (${item.variation})</div>
 <div class="history-details-single">
 <strong>${item.variation === 'Bodyweight' ? '' : item.weight + item.unit + ' × '}${item.reps}${item.time ? ' (' + item.time + 's)' : ''}</strong>
 <button class="edit-btn" onclick="openEditLogModal('${item.id}')">✏️</button>
