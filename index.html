@@ -15,7 +15,6 @@
 --card-border-dark: #262a36;
 --accent-neon: #00ff88;
 --accent-cyan: #00e5ff;
---accent-blue: #2563eb; /* Solid Blue Color */
 --text-main: #f0f2f5;
 --text-muted: #8a8f9e;
 --radius: 16px;
@@ -36,7 +35,6 @@
 --card-border-dark: #e1e4ea;
 --accent-neon: #00a859;
 --accent-cyan: #0088cc;
---accent-blue: #1d4ed8;
 --text-main: #111827;
 --text-muted: #6b7280;
 
@@ -91,37 +89,39 @@ justify-content: space-between;
 align-items: center;
 }
 
+/* Logo matches robotic plate colour (#8a8f9e / #222634 accenting) */
 h1 {
-font-size: 1.5rem;
+font-size: 1.4rem;
 font-weight: 900;
 letter-spacing: -0.5px;
-color: var(--accent-blue);
+color: #8a8f9e;
 background: none;
 -webkit-text-fill-color: initial;
 }
 
 .header-actions {
 display: flex;
-gap: 6px;
+gap: 12px; /* Increased spacing away from logo area */
 }
 
+/* Smaller, tighter icon buttons containing only graphics/emojis */
 .icon-btn {
 background: var(--card-dark);
 border: 1px solid var(--card-border-dark);
 color: var(--text-main);
-padding: 8px 12px;
-border-radius: 12px;
-font-size: 0.8rem;
+padding: 6px 10px;
+border-radius: 10px;
+font-size: 0.95rem;
 font-weight: 600;
 cursor: pointer;
 display: flex;
 align-items: center;
-gap: 4px;
+justify-content: center;
 transition: all 0.2s ease;
 }
 
 .icon-btn:active {
-transform: scale(0.95);
+transform: scale(0.92);
 border-color: var(--accent-neon);
 }
 
@@ -398,13 +398,22 @@ display: flex;
 gap: 8px;
 }
 
-/* EXERCISE LOGGING & GRAPH VIEW */
+/* EXERCISE LOGGING & SCROLLABLE GRAPH VIEW */
+.graph-scroll-container {
+width: 100%;
+overflow-x: auto;
+scrollbar-width: thin;
+scrollbar-color: var(--modal-border) transparent;
+-webkit-overflow-scrolling: touch;
+}
+
 .graph-card {
 background: var(--modal-card);
 border: 1px solid var(--modal-border);
 border-radius: 16px;
 padding: 12px;
-height: 180px;
+height: 190px;
+min-width: 100%; /* Dynamically expanded in JS when entries > 12 */
 }
 
 .variation-select-group {
@@ -531,30 +540,16 @@ transition: opacity 0.2s ease;
 opacity: 0.8;
 }
 
-/* Scrollable History Log */
-.history-card {
+/* Single Last Entry Card (Non-scrollable) */
+.single-history-card {
 background: var(--modal-card);
 border: 1px solid var(--modal-border);
 border-radius: 16px;
-padding: 12px;
-max-height: 160px;
-overflow-y: auto;
-display: flex;
-flex-direction: column;
-gap: 8px;
-}
-
-.history-item {
+padding: 12px 16px;
 display: flex;
 justify-content: space-between;
 align-items: center;
-padding: 6px 0;
-border-bottom: 1px solid var(--modal-border);
 font-size: 0.85rem;
-}
-
-.history-item:last-child {
-border-bottom: none;
 }
 
 .del-btn {
@@ -562,7 +557,7 @@ color: #ff4d4d;
 background: transparent;
 border: none;
 cursor: pointer;
-font-size: 0.8rem;
+font-size: 0.85rem;
 }
 </style>
 </head>
@@ -574,9 +569,9 @@ font-size: 0.8rem;
 <div class="header-top-row">
 <h1>MYOLOG</h1>
 <div class="header-actions">
-<button class="icon-btn" onclick="openWorkoutHistory()">📅 History</button>
-<button class="icon-btn" onclick="exportData()">💾 Backup</button>
-<button class="icon-btn" onclick="triggerImport()">📥 Import</button>
+<button class="icon-btn" onclick="openWorkoutHistory()" title="History">📅</button>
+<button class="icon-btn" onclick="exportData()" title="Backup">💾</button>
+<button class="icon-btn" onclick="triggerImport()" title="Import">📥</button>
 <input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="importData(event)">
 </div>
 </div>
@@ -957,8 +952,8 @@ defaultReps = lastLog && lastLog.reps ? lastLog.reps : '10-12';
 
 const body = document.getElementById('modalBody');
 body.innerHTML = `
-<div class="section-title">Past History</div>
-<div id="historyLogBox" class="history-card"></div>
+<div class="section-title">Last Entry</div>
+<div id="lastEntryCard"></div>
 
 <div class="variation-select-group">
 <select id="varSelect" class="select-style" onchange="handleVariationOrExerciseChange()">
@@ -1002,15 +997,17 @@ ${increments.map(inc => `<button class="chip-btn" onclick="adjustWeight(${inc})"
 </div>
 
 <div class="section-title">Progression Trend</div>
-<div class="graph-card">
+<div class="graph-scroll-container" id="graphScrollContainer">
+<div class="graph-card" id="graphCard">
 <canvas id="progressionChart"></canvas>
+</div>
 </div>
 `;
 
 openModal();
 handleVariationOrExerciseChange();
 renderGraph();
-renderHistoryBox();
+renderLastEntryCard();
 }
 
 function handleVariationOrExerciseChange() {
@@ -1053,13 +1050,25 @@ val = Math.max(0, val + amount);
 input.value = val;
 }
 
-/* --- CHART.JS GRAPH RENDER --- */
+/* --- CHART.JS SCROLLABLE GRAPH RENDER --- */
 function renderGraph() {
 const selectedVar = document.getElementById('varSelect').value;
 const filteredLogs = appState.logs.filter(l => l.exerciseName === appState.currentExercise && l.variation === selectedVar);
 
 const canvas = document.getElementById('progressionChart');
-if (!canvas) return;
+const graphCard = document.getElementById('graphCard');
+const scrollContainer = document.getElementById('graphScrollContainer');
+if (!canvas || !graphCard) return;
+
+const entryCount = filteredLogs.length;
+
+// Dynamically scale width when entries > 12 to enable horizontal scrolling back in time
+if (entryCount > 12) {
+const dynamicWidth = entryCount * 32; // ~32px per data point
+graphCard.style.width = `${dynamicWidth}px`;
+} else {
+graphCard.style.width = '100%';
+}
 
 const ctx = canvas.getContext('2d');
 if (appState.chartInstance) appState.chartInstance.destroy();
@@ -1067,11 +1076,11 @@ if (appState.chartInstance) appState.chartInstance.destroy();
 const isTimedEx = appState.currentExercise.toLowerCase().includes("plank") || appState.currentExercise.toLowerCase().includes("hold");
 const isBodyweight = selectedVar === "Bodyweight";
 
-let chartLabel = 'Max Weight';
+let chartLabel = 'Weight';
 let dataPoints = filteredLogs.map(l => l.weight);
 
 if (isTimedEx) {
-chartLabel = 'Duration (s)';
+chartLabel = 'Duration';
 dataPoints = filteredLogs.map(l => parseFloat(l.time) || 0);
 } else if (isBodyweight) {
 chartLabel = 'Reps';
@@ -1089,35 +1098,71 @@ borderColor: '#00ff88',
 backgroundColor: 'rgba(0, 255, 136, 0.1)',
 fill: true,
 tension: 0.3,
-pointRadius: 4
+pointStyle: 'circle', // Solid dot
+pointRadius: 6,
+pointHoverRadius: 8,
+pointBackgroundColor: '#00ff88',
+pointBorderColor: '#00ff88'
 }]
 },
 options: {
 responsive: true,
 maintainAspectRatio: false,
-plugins: { legend: { display: false } },
+plugins: {
+legend: { display: false },
+tooltip: {
+callbacks: {
+// Tooltip format: "Weight x Reps on Date" (e.g., 20kg x 10 on 2026-09-24)
+label: function(context) {
+const index = context.dataIndex;
+const log = filteredLogs[index];
+if (!log) return '';
+
+if (isTimedEx) {
+return `${log.time ? log.time + 's' : ''}${log.reps ? ' (' + log.reps + ' reps)' : ''}`;
+} else if (isBodyweight) {
+return `${log.reps} reps`;
+} else {
+return `${log.weight}${log.unit} × ${log.reps}`;
+}
+},
+title: function(context) {
+return context[0].label; // Displays Date
+}
+}
+}
+},
 scales: {
 x: { ticks: { color: '#8a8f9e', font: { size: 10 } }, grid: { display: false } },
 y: { ticks: { color: '#8a8f9e', font: { size: 10 } }, grid: { color: '#2e3342' } }
 }
 }
 });
+
+// Auto scroll to the far right (most recent data point)
+if (scrollContainer && entryCount > 12) {
+setTimeout(() => {
+scrollContainer.scrollLeft = scrollContainer.scrollWidth;
+}, 50);
+}
 }
 
-/* --- HISTORY BOX & ENTRY DELETION --- */
-function renderHistoryBox() {
-const container = document.getElementById('historyLogBox');
+/* --- RENDER SINGLE LAST ENTRY CARD (NON-SCROLLABLE) --- */
+function renderLastEntryCard() {
+const container = document.getElementById('lastEntryCard');
 if (!container) return;
 
-const filtered = appState.logs.filter(l => l.exerciseName === appState.currentExercise).reverse();
+const filtered = appState.logs.filter(l => l.exerciseName === appState.currentExercise);
 
 if (filtered.length === 0) {
-container.innerHTML = '<div style="color:var(--modal-subtext); font-size:0.8rem;">No past entries yet.</div>';
+container.innerHTML = '<div class="single-history-card" style="color:var(--modal-subtext);">No past entries logged yet.</div>';
 return;
 }
 
-container.innerHTML = filtered.map(item => `
-<div class="history-item">
+const item = filtered[filtered.length - 1]; // Only show the single most recent log
+
+container.innerHTML = `
+<div class="single-history-card">
 <div>
 <strong>${item.variation === 'Bodyweight' ? '' : item.weight + ' ' + item.unit + ' × '}${item.reps ? item.reps + ' reps' : ''}${item.time ? ' (' + item.time + 's)' : ''}</strong>
 <span style="color:var(--modal-subtext); font-size:0.75rem; margin-left:6px;">(${item.variation})</span>
@@ -1127,7 +1172,7 @@ container.innerHTML = filtered.map(item => `
 <button class="del-btn" onclick="deleteLog('${item.id}')">✕</button>
 </div>
 </div>
-`).join('');
+`;
 }
 
 function saveLogEntry() {
@@ -1153,14 +1198,14 @@ localStorage.setItem('myolog_logs', JSON.stringify(appState.logs));
 renderRecentChips();
 checkBackupPrompt();
 renderGraph();
-renderHistoryBox();
+renderLastEntryCard();
 }
 
 function deleteLog(id) {
 appState.logs = appState.logs.filter(l => l.id !== id);
 localStorage.setItem('myolog_logs', JSON.stringify(appState.logs));
 renderGraph();
-renderHistoryBox();
+renderLastEntryCard();
 renderRecentChips();
 }
 
