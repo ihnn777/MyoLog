@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>MyoLog - Fitness & Progression Tracker</title>
 <!-- Chart.js CDN for progression graphs -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,7 +11,7 @@
 :root {
 /* Cyber Dark Theme (Homepage, Graphs, Workout History) */
 --bg-dark: #101216;
---card-dark: #2a2f3e; /* Lighter background bubble for high contrast */
+--card-dark: #2a2f3e; /* High contrast card bubble */
 --card-border-dark: #3a4154;
 --muscle-plate-bg: #222634; /* Dark body part plates */
 --muscle-plate-border: #33384a;
@@ -58,15 +58,22 @@ font-family: var(--font-stack);
 -webkit-tap-highlight-color: transparent;
 }
 
-body {
+/* ENFORCE FULL VERTICAL SCROLLING ON ENTIRE BODY & HTML */
+html, body {
+width: 100%;
+min-height: 100vh;
+overflow-y: auto !important;
+overflow-x: hidden;
 background-color: var(--bg-dark);
 color: var(--text-main);
+-webkit-overflow-scrolling: touch;
+}
+
+body {
 display: flex;
 flex-direction: column;
 align-items: center;
-min-height: 100vh;
-padding-bottom: 20px;
-overflow-x: hidden;
+padding-bottom: 40px;
 }
 
 /* --- LAYOUT CONTAINERS --- */
@@ -77,8 +84,9 @@ padding: 16px;
 display: flex;
 flex-direction: column;
 gap: 16px;
-min-height: 98vh; /* Maximum vertical space pushing controls to bottom for thumb reach */
+min-height: 100vh;
 justify-content: flex-end;
+box-sizing: border-box;
 }
 
 /* --- HEADER & TOP BAR --- */
@@ -87,7 +95,7 @@ display: flex;
 flex-direction: column;
 gap: 10px;
 padding-bottom: 4px;
-margin-bottom: auto; /* Pinned at top while pushing body elements downwards */
+margin-bottom: auto;
 }
 
 .header-top-row {
@@ -277,7 +285,7 @@ letter-spacing: 0.5px;
 fill: #000000;
 }
 
-/* --- FLOATING POP-UP MODAL WINDOW --- */
+/* --- FLOATING POP-UP MODAL OVERLAY & FULLY SCROLLABLE WINDOWS --- */
 .modal-overlay {
 position: fixed;
 top: 0;
@@ -292,6 +300,8 @@ align-items: center;
 padding: 16px;
 z-index: 1000;
 opacity: 0;
+overflow-y: auto !important; /* Allows full screen vertical scrolling on mobile overlays */
+-webkit-overflow-scrolling: touch;
 transition: opacity 0.25s ease;
 }
 
@@ -305,7 +315,7 @@ background: var(--modal-bg);
 border-radius: 24px;
 width: 100%;
 max-width: 460px;
-max-height: 85vh;
+max-height: 90vh;
 display: flex;
 flex-direction: column;
 overflow: hidden;
@@ -313,6 +323,7 @@ border: 2px solid var(--modal-border);
 box-shadow: 0 16px 48px rgba(0,0,0,0.7);
 transform: scale(0.95) translateY(10px);
 transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+margin: auto;
 }
 
 .modal-overlay.active .modal-window {
@@ -350,7 +361,7 @@ cursor: pointer;
 line-height: 1;
 }
 
-/* FULLY VERTICALLY SCROLLABLE MODAL BODY */
+/* FULLY SCROLLABLE MODAL BODY */
 .modal-body {
 padding: 20px;
 overflow-y: auto !important;
@@ -423,11 +434,11 @@ gap: 8px;
 .graph-scroll-container {
 width: 100%;
 overflow-x: auto !important;
-overflow-y: hidden !important; /* Strict horizontal scroll only, no vertical scroll allowed */
+overflow-y: hidden !important; /* Strict horizontal-only scroll for charts */
 scrollbar-width: thin;
 scrollbar-color: var(--modal-border) transparent;
 -webkit-overflow-scrolling: touch;
-touch-action: pan-x; /* Locks touch gestures to horizontal panning */
+touch-action: pan-x;
 border-radius: 16px;
 }
 
@@ -505,7 +516,6 @@ outline: none;
 box-sizing: border-box;
 }
 
-/* Date input styling to fit inside container padding */
 input[type="date"].num-input {
 max-width: 100%;
 appearance: none;
@@ -522,7 +532,6 @@ border-radius: 10px;
 font-weight: 600;
 }
 
-/* Quick Increment Chips - Coloured Button Style */
 .increment-chips {
 display: flex;
 gap: 6px;
@@ -719,7 +728,7 @@ flex-shrink: 0;
 <text x="101" y="314" class="plate-label">Calf</text>
 
 <!-- ================= RIGHT HALF: BACK VIEW ================= -->
-<!-- Upper Back / Traps (Height: 40px) -->
+<!-- Upper Back / Traps -->
 <rect x="122" y="50" width="44" height="40" rx="8" class="muscle-plate" data-muscle="Upper Back"/>
 <text x="144" y="70" class="plate-label">Upper</text>
 
@@ -727,7 +736,7 @@ flex-shrink: 0;
 <rect x="168" y="50" width="44" height="44" rx="10" class="muscle-plate" data-muscle="Shoulders"/>
 <text x="190" y="72" class="plate-label">Shoulder</text>
 
-<!-- Mid Back & Lats (Height: 40px) -->
+<!-- Mid Back & Lats -->
 <rect x="122" y="92" width="44" height="40" rx="8" class="muscle-plate" data-muscle="Mid Back"/>
 <text x="144" y="112" class="plate-label">
   <tspan x="144" dy="-4">Mid</tspan>
@@ -738,7 +747,7 @@ flex-shrink: 0;
 <rect x="170" y="98" width="42" height="50" rx="8" class="muscle-plate" data-muscle="Arms"/>
 <text x="191" y="123" class="plate-label">Tri</text>
 
-<!-- Lower Back (Erectors) (Height: 38px) -->
+<!-- Lower Back (Erectors) -->
 <rect x="122" y="134" width="44" height="38" rx="8" class="muscle-plate" data-muscle="Lower Back"/>
 <text x="144" y="153" class="plate-label">Lower</text>
 
