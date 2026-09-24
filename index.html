@@ -113,14 +113,14 @@ background: none;
 
 .header-actions {
 display: flex;
-gap: 12px;
+gap: 8px;
 }
 
 .icon-btn {
 background: var(--card-dark);
 border: 1px solid var(--card-border-dark);
 color: var(--text-main);
-padding: 6px 10px;
+padding: 6px 9px;
 border-radius: 10px;
 font-size: 0.95rem;
 font-weight: 600;
@@ -164,12 +164,6 @@ flex-direction: column;
 gap: 8px;
 }
 
-.section-title-row {
-display: flex;
-justify-content: space-between;
-align-items: center;
-}
-
 .section-title {
 font-size: 0.72rem;
 text-transform: uppercase;
@@ -186,17 +180,6 @@ color: var(--modal-subtext);
 font-weight: 800;
 margin-top: 2px;
 margin-bottom: -2px;
-}
-
-.home-export-btn {
-background: rgba(0, 255, 136, 0.12);
-border: 1px solid var(--accent-neon);
-color: var(--accent-neon);
-font-size: 0.75rem;
-font-weight: 700;
-padding: 4px 10px;
-border-radius: 8px;
-cursor: pointer;
 }
 
 .recent-chips {
@@ -381,23 +364,30 @@ cursor: pointer;
 line-height: 1;
 }
 
+/* SUBTLE, NON-INTRUSIVE EDIT BUTTON */
 .header-text-btn {
 background: transparent;
-border: 1px solid var(--modal-border);
-color: var(--accent-neon);
-font-size: 0.75rem;
-font-weight: 800;
-padding: 4px 10px;
-border-radius: 8px;
+border: none;
+color: var(--modal-subtext);
+font-size: 0.8rem;
+font-weight: 500;
+padding: 4px 8px;
 cursor: pointer;
 margin-left: auto;
-margin-right: 8px;
+margin-right: 6px;
+opacity: 0.7;
+transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.header-text-btn:hover {
+opacity: 1;
+color: var(--modal-accent);
 }
 
 .header-text-btn.active {
-background: #ff4d4d;
-color: #fff;
-border-color: #ff4d4d;
+color: #ff4d4d;
+opacity: 1;
+font-weight: 700;
 }
 
 /* COMPACT MODAL BODY FOR ZERO SCROLLING */
@@ -680,11 +670,6 @@ box-sizing: border-box;
 position: relative;
 }
 
-.variation-select-group {
-display: flex;
-gap: 8px;
-}
-
 .select-style {
 flex: 1;
 background: var(--modal-card);
@@ -735,12 +720,13 @@ flex-shrink: 0;
 <body>
 
 <div class="app-container">
-<!-- HOMEPAGE HEADER & TOP BACKUP BAR -->
+<!-- HOMEPAGE HEADER & TOP ACTION BUTTONS -->
 <header>
 <div class="header-top-row">
 <h1>MYOLOG</h1>
 <div class="header-actions">
 <button class="icon-btn" onclick="openWorkoutHistory()" title="History">📅</button>
+<button class="icon-btn" onclick="exportData()" title="Export File">📤</button>
 <button class="icon-btn" onclick="exportData()" title="Backup">💾</button>
 <button class="icon-btn" onclick="triggerImport()" title="Import">📥</button>
 <input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="importData(event)">
@@ -775,7 +761,7 @@ flex-shrink: 0;
 <text x="50" y="72" class="plate-label">Shoulder</text>
 
 <rect x="74" y="50" width="44" height="48" rx="8" class="muscle-plate" data-muscle="Chest"/>
-<text x="96" y="74" class="plate-label">Pec</text>
+<text x="96" y="74" class="plate-label">Chest</text>
 
 <rect x="28" y="98" width="42" height="50" rx="8" class="muscle-plate" data-muscle="Arms"/>
 <text x="49" y="123" class="plate-label">Arm</text>
@@ -783,7 +769,7 @@ flex-shrink: 0;
 <rect x="74" y="102" width="44" height="68" rx="8" class="muscle-plate" data-muscle="Core"/>
 <text x="96" y="136" class="plate-label">Abs</text>
 
-<rect x="76" y="174" width="42" height="92" rx="10" class="muscle-plate" data-muscle="Quads"/>
+<rect x="76" y="174" width="42" height="92" rx="10" class="muscle-plate" data-muscle="Quads / Adductors"/>
 <text x="97" y="214" class="plate-label">
   <tspan x="97" dy="0">Quad</tspan>
   <tspan x="97" dy="10">/Add</tspan>
@@ -799,7 +785,7 @@ flex-shrink: 0;
 <rect x="168" y="50" width="44" height="44" rx="10" class="muscle-plate" data-muscle="Shoulders"/>
 <text x="190" y="72" class="plate-label">Shoulder</text>
 
-<rect x="122" y="92" width="44" height="40" rx="8" class="muscle-plate" data-muscle="Mid Back"/>
+<rect x="122" y="92" width="44" height="40" rx="8" class="muscle-plate" data-muscle="Mid Back / Lats"/>
 <text x="144" y="112" class="plate-label">
   <tspan x="144" dy="-4">Mid</tspan>
   <tspan x="144" dy="10">/Lat</tspan>
@@ -825,11 +811,8 @@ flex-shrink: 0;
 
 <!-- BOTTOM HOMEPAGE SEARCH BAR -->
 <div class="recent-bar">
-<div class="section-title-row">
 <div class="section-title">Quick Search</div>
-<button class="home-export-btn" onclick="exportData()">💾 Export File</button>
-</div>
-<input type="text" id="homeSearchInput" class="home-search-input" placeholder="🔍 Search exercise..." oninput="handleHomeSearch(this.value)">
+<input type="text" id="homeSearchInput" class="home-search-input" placeholder="🔍 Search exercise..." oninput="handleHomeSearch(this.value)" onblur="handleSearchBlur()">
 <div id="searchResultsList" class="exercise-list" style="display:none; margin-top:6px;"></div>
 </div>
 
@@ -905,7 +888,7 @@ exercises: ["Bicep Curls", "Hammer Curls", "Wrist Curls"]
 isSmall: true,
 exercises: ["Cable Woodchoppers", "Hanging Leg Raise", "Ab Wheel Rollout", "Russian Twists", "Plank", "Side Plank Hold"]
 },
-"Quads": {
+"Quads / Adductors": {
 isSmall: false,
 exercises: ["Barbell Squat", "Leg Press", "Leg Extension", "Lunges", "Bulgarian Split Squat", "Machine Inner Thigh Adduction"]
 },
@@ -913,7 +896,7 @@ exercises: ["Barbell Squat", "Leg Press", "Leg Extension", "Lunges", "Bulgarian 
 isSmall: false,
 exercises: ["Barbell Shrugs", "Face Pulls", "Chest-Supported Row"]
 },
-"Mid Back": {
+"Mid Back / Lats": {
 isSmall: false,
 exercises: ["Lat Pulldown", "Seated Cable Row (Wide Grip)", "Seated Cable Row (Narrow Grip)", "Single-Arm Dumbbell Row", "T-Bar Row"]
 },
@@ -986,7 +969,7 @@ all = [...defaults, ...customs];
 return [...new Set(all)].filter(ex => !appState.hiddenEx.includes(ex));
 }
 
-/* --- HOMEPAGE SEARCH & AUTOMATIC CLEARING --- */
+/* --- HOMEPAGE SEARCH & AUTOMATIC CLEARING ON BLUR --- */
 function handleHomeSearch(query) {
 const resultsContainer = document.getElementById('searchResultsList');
 const trimmed = query.trim();
@@ -1004,14 +987,14 @@ resultsContainer.style.display = 'flex';
 
 if (filtered.length === 0) {
 resultsContainer.innerHTML = `
-<div class="exercise-item" onclick="createAndLogSearchExercise('${trimmed.replace(/'/g, "\\'")}')">
+<div class="exercise-item" onmousedown="createAndLogSearchExercise('${trimmed.replace(/'/g, "\\'")}')">
 <span style="color:var(--accent-neon);">+ Add "${trimmed}"</span>
 <span style="color:var(--modal-subtext); font-size:0.8rem;">➔</span>
 </div>
 `;
 } else {
 let html = filtered.slice(0, 5).map(ex => `
-<div class="exercise-item" onclick="openExerciseLoggingFromSearch('${ex}')">
+<div class="exercise-item" onmousedown="openExerciseLoggingFromSearch('${ex}')">
 <span>${ex}</span>
 <span style="color:var(--modal-subtext); font-size:0.8rem;">➔</span>
 </div>
@@ -1019,7 +1002,7 @@ let html = filtered.slice(0, 5).map(ex => `
 
 if (!filtered.some(e => e.toLowerCase() === trimmed.toLowerCase())) {
 html += `
-<div class="exercise-item" onclick="createAndLogSearchExercise('${trimmed.replace(/'/g, "\\'")}')" style="border-top:1px dashed var(--card-border-dark);">
+<div class="exercise-item" onmousedown="createAndLogSearchExercise('${trimmed.replace(/'/g, "\\'")}')" style="border-top:1px dashed var(--card-border-dark);">
 <span style="color:var(--accent-neon);">+ Add "${trimmed}"</span>
 <span style="color:var(--modal-subtext); font-size:0.8rem;">➔</span>
 </div>
@@ -1027,6 +1010,13 @@ html += `
 }
 resultsContainer.innerHTML = html;
 }
+}
+
+function handleSearchBlur() {
+// Brief delay to allow click/tap on dropdown item before clearing
+setTimeout(() => {
+clearHomeSearch();
+}, 150);
 }
 
 function clearHomeSearch() {
@@ -1106,7 +1096,7 @@ closeModal();
 }
 }
 
-/* --- STEP 1: MUSCLE EXERCISE LIST VIEW WITH EDIT DELETE MODE --- */
+/* --- STEP 1: MUSCLE EXERCISE LIST VIEW WITH SUBTLE EDIT BUTTON --- */
 function openMuscleModal(muscle) {
 appState.currentMuscle = muscle;
 appState.isEditMode = false;
@@ -1236,7 +1226,7 @@ return "Barbell";
 return "Machine";
 }
 
-/* --- STEP 2: EXERCISE LOGGING VIEW WITH DYNAMIC SINGLE-LEG INCREMENTS --- */
+/* --- STEP 2: EXERCISE LOGGING VIEW --- */
 function openExerciseLogging(exerciseName) {
 appState.currentExercise = exerciseName;
 appState.isEditMode = false;
@@ -1258,17 +1248,15 @@ const isSmall = appState.currentMuscle && EXERCISE_DB[appState.currentMuscle]
 
 const exNameLower = exerciseName.toLowerCase();
 
-// CHECK IF THE EXERCISE IS A SINGLE-LEG / UNILATERAL MOVEMENT
 const isSingleLeg = exNameLower.includes("single") || 
                     exNameLower.includes("lunge") || 
                     exNameLower.includes("split") || 
                     exNameLower.includes("one leg") || 
                     exNameLower.includes("bulgarian");
 
-// EXACT 4 SYMMETRICAL INCREMENTS FOR WEIGHT
 let weightIncrements = [-10, -5, 5, 10];
 if (isSingleLeg) {
-weightIncrements = [-5, -2.5, 2.5, 5]; // Single-leg exercises get +- 2.5/5kg
+weightIncrements = [-5, -2.5, 2.5, 5];
 } else if (isSmall) {
 weightIncrements = [-2, -1, 1, 2];
 }
