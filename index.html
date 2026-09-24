@@ -726,10 +726,7 @@ flex-shrink: 0;
 <h1>MYOLOG</h1>
 <div class="header-actions">
 <button class="icon-btn" onclick="openWorkoutHistory()" title="History">📅</button>
-<button class="icon-btn" onclick="exportData()" title="Export File">📤</button>
 <button class="icon-btn" onclick="exportData()" title="Backup">💾</button>
-<button class="icon-btn" onclick="triggerImport()" title="Import">📥</button>
-<input type="file" id="importFileInput" style="display:none;" accept=".json" onchange="importData(event)">
 </div>
 </div>
 </header>
@@ -1013,7 +1010,6 @@ resultsContainer.innerHTML = html;
 }
 
 function handleSearchBlur() {
-// Brief delay to allow click/tap on dropdown item before clearing
 setTimeout(() => {
 clearHomeSearch();
 }, 150);
