@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>MyoLog - Fitness & Progression Tracker</title>
 <!-- Chart.js CDN for progression graphs -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,7 +11,7 @@
 :root {
 /* Cyber Dark Theme (Homepage, Graphs, Workout History) */
 --bg-dark: #101216;
---card-dark: #2a2f3e; /* High contrast card bubble */
+--card-dark: #2a2f3e; /* High contrast background bubble */
 --card-border-dark: #3a4154;
 --muscle-plate-bg: #222634; /* Dark body part plates */
 --muscle-plate-border: #33384a;
@@ -58,22 +58,15 @@ font-family: var(--font-stack);
 -webkit-tap-highlight-color: transparent;
 }
 
-/* ENFORCE FULL VERTICAL SCROLLING ON ENTIRE BODY & HTML */
-html, body {
-width: 100%;
-min-height: 100vh;
-overflow-y: auto !important;
-overflow-x: hidden;
+body {
 background-color: var(--bg-dark);
 color: var(--text-main);
--webkit-overflow-scrolling: touch;
-}
-
-body {
 display: flex;
 flex-direction: column;
 align-items: center;
-padding-bottom: 40px;
+min-height: 100vh;
+padding-bottom: 20px;
+overflow-x: hidden;
 }
 
 /* --- LAYOUT CONTAINERS --- */
@@ -84,9 +77,8 @@ padding: 16px;
 display: flex;
 flex-direction: column;
 gap: 16px;
-min-height: 100vh;
+min-height: 98vh; /* Maximum vertical space pushing controls to bottom for thumb reach */
 justify-content: flex-end;
-box-sizing: border-box;
 }
 
 /* --- HEADER & TOP BAR --- */
@@ -95,7 +87,7 @@ display: flex;
 flex-direction: column;
 gap: 10px;
 padding-bottom: 4px;
-margin-bottom: auto;
+margin-bottom: auto; /* Pinned at top while pushing body elements downwards */
 }
 
 .header-top-row {
@@ -285,7 +277,7 @@ letter-spacing: 0.5px;
 fill: #000000;
 }
 
-/* --- FLOATING POP-UP MODAL OVERLAY & FULLY SCROLLABLE WINDOWS --- */
+/* --- FLOATING POP-UP MODAL WINDOW --- */
 .modal-overlay {
 position: fixed;
 top: 0;
@@ -300,8 +292,6 @@ align-items: center;
 padding: 16px;
 z-index: 1000;
 opacity: 0;
-overflow-y: auto !important; /* Allows full screen vertical scrolling on mobile overlays */
--webkit-overflow-scrolling: touch;
 transition: opacity 0.25s ease;
 }
 
@@ -315,7 +305,7 @@ background: var(--modal-bg);
 border-radius: 24px;
 width: 100%;
 max-width: 460px;
-max-height: 90vh;
+max-height: 85vh;
 display: flex;
 flex-direction: column;
 overflow: hidden;
@@ -323,7 +313,6 @@ border: 2px solid var(--modal-border);
 box-shadow: 0 16px 48px rgba(0,0,0,0.7);
 transform: scale(0.95) translateY(10px);
 transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
-margin: auto;
 }
 
 .modal-overlay.active .modal-window {
@@ -361,11 +350,10 @@ cursor: pointer;
 line-height: 1;
 }
 
-/* FULLY SCROLLABLE MODAL BODY */
+/* FIXED SCROLLABLE MODAL BODY WITH SUFFICIENT BOTTOM PADDING */
 .modal-body {
-padding: 20px;
-overflow-y: auto !important;
-overflow-x: hidden;
+padding: 20px 20px 32px 20px; /* Added extra bottom padding so the graph never gets cut off */
+overflow-y: auto;
 -webkit-overflow-scrolling: touch;
 overscroll-behavior: contain;
 display: flex;
@@ -433,21 +421,23 @@ gap: 8px;
 /* EXERCISE LOGGING & STRICT HORIZONTAL-ONLY GRAPH SCROLLING */
 .graph-scroll-container {
 width: 100%;
-overflow-x: auto !important;
-overflow-y: hidden !important; /* Strict horizontal-only scroll for charts */
+overflow-x: auto;
+overflow-y: hidden; /* Prevent vertical overflow inside graph wrapper */
 scrollbar-width: thin;
 scrollbar-color: var(--modal-border) transparent;
 -webkit-overflow-scrolling: touch;
 touch-action: pan-x;
 border-radius: 16px;
+padding-bottom: 6px; /* Extra breathing space for x-axis ticks */
+margin-bottom: 8px;
 }
 
 .graph-card {
 background: var(--modal-card);
 border: 1px solid var(--modal-border);
 border-radius: 16px;
-padding: 12px;
-height: 190px;
+padding: 12px 12px 16px 12px; /* Ensure bottom axis has padding inside canvas card */
+height: 195px;
 min-width: 100%;
 box-sizing: border-box;
 }
@@ -532,6 +522,7 @@ border-radius: 10px;
 font-weight: 600;
 }
 
+/* Quick Increment Chips */
 .increment-chips {
 display: flex;
 gap: 6px;
